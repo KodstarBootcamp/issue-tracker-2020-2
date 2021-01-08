@@ -48,15 +48,36 @@ export default function Issue (props) {
   }, [checkStatus]) //after select all changed
 
   function getStatus (id) {
-    if (checkedIssues === undefined || checkedIssues.length === 0) {
-      return false
-    } else {
-      checkedIssues.map(i => {
-        if (i.id === id) {
-          return i.status
-        }
-      })
+    let status
+    let tempArray = []
+    if (issues.length !== 0) {
+      if (checkedIssues.length === 0) {
+        issues.map(i => {
+          tempArray.push({ id: i.id, status: false })
+        })
+        setCheck(tempArray)
+        status = false
+      } else {
+        checkedIssues.map(i => {
+          if (i.id === id) {
+            status = i.status
+          }
+        })
+      }
     }
+    return status
+  }
+  function handleCheckBoxes (event, id) {
+    let tempArray = []
+    checkedIssues.map(i => {
+      tempArray.push(i)
+    })
+    tempArray.map((i, index) => {
+      if (i.id === id) {
+        tempArray[index].status = event.target.checked
+      }
+    })
+    setCheck(tempArray)
   }
 
   return (
@@ -70,8 +91,10 @@ export default function Issue (props) {
                   <Form className='check-issue'>
                     <FormCheck
                       type='checkbox'
-                      checked={getStatus(issue.id)}
-                      onChange={() => {}}
+                      checked={getStatus(issue.id) || false}
+                      onChange={e => {
+                        handleCheckBoxes(e, issue.id)
+                      }}
                     ></FormCheck>
                   </Form>
                 </div>
