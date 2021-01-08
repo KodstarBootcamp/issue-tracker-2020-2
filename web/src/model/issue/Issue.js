@@ -1,63 +1,15 @@
 import React, { useState, useEffect } from 'react'
-import { Badge, Form, Table } from 'react-bootstrap'
-import { getIssues } from '../../service/getIssues'
+import { Badge, Form, FormCheck, Table } from 'react-bootstrap'
 import { getFilteredIssues } from '../../service/getFilteredIssues'
 import { getSortedIssues } from '../../service/getSortedIssues'
+import { deleteSelectedIssues } from '../../service/deleteSelectedIssues'
 import './scss/issue.scss'
 
 export default function Issue (props) {
-  let [issues, setIssue] = useState([])
+  let [issues, setIssues] = useState([])
   let [checkedIssues, setCheck] = useState([])
 
-  useEffect(() => {
-    getIssues().then(issue => {
-      setIssue(issue.data)
-    })
-  }, [])
-
-  useEffect(() => {
-    getFilteredIssues(props.issueFilter).then(issue => {
-      setIssue(issue.data)
-    })
-  }, [props.issueFilter])
-
-  useEffect(() => {
-    let checked = []
-    issues.map(issue =>
-      checked.push({ id: issue.id, status: props.checkStatus })
-    )
-    setCheck(checked)
-  }, [props.checkStatus])
-
-  useEffect(() => {
-    getSortedIssues(props.sortParams).then(issue => {
-      setIssue(issue.data)
-    })
-  }, [props.sortParams])
-
-  const getStatus = issue => {
-    let s = false
-    checkedIssues.map(i => {
-      if (i.id === issue.id) {
-        s = i.status
-      }
-      return s
-    })
-    return s
-  }
-  const handleChanges = (e, id) => {
-    let newChecked = []
-
-    checkedIssues.map(i => {
-      if (i.id === id) {
-        newChecked.push({ id: id, status: e.target.checked })
-      } else {
-        newChecked.push(i)
-      }
-      return newChecked
-    })
-    setCheck(newChecked)
-  }
+  let { issueFilter, checkStatus, sortParams, isShow, deleteSelections } = props
 
   const dateOptions = {
     day: '2-digit',
@@ -69,6 +21,78 @@ export default function Issue (props) {
     minute: '2-digit'
   }
 
+  useEffect(() => {
+    getFilteredIssues(issueFilter).then(issue => {
+      setIssues(issue.data)
+    })
+  }, [issueFilter])
+
+  useEffect(() => {
+    if (sortParams !== '') {
+      getSortedIssues(sortParams).then(issue => {
+        setIssues(issue.data)
+      })
+    }
+  }, [sortParams])
+
+  useEffect(() => {
+    let tempArray = []
+    if (issues.length !== 0) {
+      issues.map(i => tempArray.push({ id: i.id, status: checkStatus }))
+      setCheck(tempArray)
+    }
+  }, [checkStatus]) //after select all changed
+
+  useEffect(() => {
+    let selected = []
+    let count = 0
+    if (checkedIssues.length !== 0) {
+      checkedIssues.map(c =>
+        c.status === true ? selected.push(c.id) && count++ : null
+      )
+    }
+    if (selected.length > 0 && count > 0) {
+      isShow('visible', false)
+    } else {
+      isShow('hidden', false)
+    }
+  }, [checkedIssues])
+
+  useEffect(() => {
+    if (deleteSelections === true) {
+      let selected = []
+      checkedIssues.map(c => (c.status === true ? selected.push(c.id) : null))
+      deleteSelectedIssues(selected).then(i => {
+        setIssues(i.data)
+      })
+
+      isShow('hidden', true)
+    }
+  }, [deleteSelections])
+
+  function getStatus (id) {
+    let status
+    let tempArray = []
+    if (issues.length !== 0) {
+      if (checkedIssues.length === 0) {
+        issues.map(i => tempArray.push({ id: i.id, status: false }))
+        setCheck(tempArray)
+        status = false
+      } else {
+        checkedIssues.map(i => (i.id === id ? (status = i.status) : null))
+      }
+    }
+    return status
+  }
+  function handleCheckBoxes (event, id) {
+    let tempArray = []
+    checkedIssues.map(i => tempArray.push(i))
+    tempArray.map((i, index) =>
+      i.id === id ? (tempArray[index].status = event.target.checked) : null
+    )
+    setCheck(tempArray)
+  }
+
   return (
     <Table striped bordered hover variant='dark'>
       <tbody className='container'>
@@ -78,12 +102,13 @@ export default function Issue (props) {
               <td className='col-12'>
                 <div className='check-issue-container col-1'>
                   <Form className='check-issue'>
-                    <Form.Check
-                      checked={getStatus(issue)}
+                    <FormCheck
+                      type='checkbox'
+                      checked={getStatus(issue.id) || false}
                       onChange={e => {
-                        handleChanges(e, issue.id)
+                        handleCheckBoxes(e, issue.id)
                       }}
-                    ></Form.Check>
+                    ></FormCheck>
                   </Form>
                 </div>
                 <div className='issue-body col-6'>

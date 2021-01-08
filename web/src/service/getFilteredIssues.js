@@ -16,7 +16,7 @@ export const getFilteredIssues = async searchFilter => {
     .replace(/\s/gi, '')
 
   if (searchFilter === '' || filterKeyword === '') {
-    return await getIssues()
+    return getIssues()
   } else if (searchFilter.indexOf(':') === -1 || keyword === 'title') {
     return await axios.get(title_search_url + filterKeyword)
   } else if (searchFilter.indexOf(':') !== -1 && keyword === 'description') {
