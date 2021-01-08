@@ -22,6 +22,8 @@ export default function Issues () {
   let [filterIssue, setIssueFilter] = useState('')
   let [check, setCheck] = useState(false)
   let [sort, setSort] = useState('')
+  let [showDeleteButton, setVisibility] = useState('hidden')
+  let [deleteSelected, setDelete] = useState(false)
 
   useEffect(() => {
     getLabels().then(labels => {
@@ -51,6 +53,15 @@ export default function Issues () {
   const handleCheckBox = e => {
     setCheck(e.target.checked)
   }
+  const askDelete = (willShow, isDeleted) => {
+    setVisibility(willShow)
+  }
+
+  const sendDelete = () => {
+    if (showDeleteButton === 'visible') {
+      setDelete(true)
+    }
+  }
 
   const sortSelections = [
     'Newest',
@@ -69,6 +80,15 @@ export default function Issues () {
               handleCheckBox(e)
             }}
           ></Form.Check>
+          <button
+            type='button'
+            className='delete-all'
+            style={{ visibility: showDeleteButton }}
+            onClick={() => sendDelete()}
+          >
+            <i className='delete-all-icon'></i>
+            <span className='delete-all-text'>{'(delete all)'}</span>
+          </button>
           <div className='search-container'>
             <Form.Control
               className='search'
@@ -158,7 +178,13 @@ export default function Issues () {
           </Nav>
         </Navbar.Collapse>
       </Navbar>
-      <Issue issueFilter={filterIssue} checkStatus={check} sortParams={sort} />
+      <Issue
+        issueFilter={filterIssue}
+        checkStatus={check}
+        sortParams={sort}
+        isShow={askDelete}
+        deleteSelections={deleteSelected}
+      />
     </Container>
   )
 }

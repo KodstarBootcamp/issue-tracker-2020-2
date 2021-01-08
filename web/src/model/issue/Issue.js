@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react'
 import { Badge, Form, FormCheck, Table } from 'react-bootstrap'
-import { getIssues } from '../../service/getIssues'
 import { getFilteredIssues } from '../../service/getFilteredIssues'
 import { getSortedIssues } from '../../service/getSortedIssues'
+import { deleteSelectedIssues } from '../../service/deleteSelectedIssues'
 import './scss/issue.scss'
 
 export default function Issue (props) {
   let [issues, setIssues] = useState([])
   let [checkedIssues, setCheck] = useState([])
 
-  const { issueFilter, checkStatus, sortParams } = props
+  let { issueFilter, checkStatus, sortParams, isShow, deleteSelections } = props
 
   const dateOptions = {
     day: '2-digit',
@@ -20,8 +20,6 @@ export default function Issue (props) {
     hour: '2-digit',
     minute: '2-digit'
   }
-
-  const handleChanges = (e, id) => {}
 
   useEffect(() => {
     getFilteredIssues(issueFilter).then(issue => {
@@ -40,43 +38,58 @@ export default function Issue (props) {
   useEffect(() => {
     let tempArray = []
     if (issues.length !== 0) {
-      issues.map(i => {
-        tempArray.push({ id: i.id, status: checkStatus })
-      })
+      issues.map(i => tempArray.push({ id: i.id, status: checkStatus }))
       setCheck(tempArray)
     }
   }, [checkStatus]) //after select all changed
+
+  useEffect(() => {
+    let selected = []
+    let count = 0
+    if (checkedIssues.length !== 0) {
+      checkedIssues.map(c =>
+        c.status === true ? selected.push(c.id) && count++ : null
+      )
+    }
+    if (selected.length > 0 && count > 0) {
+      isShow('visible', false)
+    } else {
+      isShow('hidden', false)
+    }
+  }, [checkedIssues])
+
+  useEffect(() => {
+    if (deleteSelections === true) {
+      let selected = []
+      checkedIssues.map(c => (c.status === true ? selected.push(c.id) : null))
+      deleteSelectedIssues(selected).then(i => {
+        setIssues(i.data)
+      })
+
+      isShow('hidden', true)
+    }
+  }, [deleteSelections])
 
   function getStatus (id) {
     let status
     let tempArray = []
     if (issues.length !== 0) {
       if (checkedIssues.length === 0) {
-        issues.map(i => {
-          tempArray.push({ id: i.id, status: false })
-        })
+        issues.map(i => tempArray.push({ id: i.id, status: false }))
         setCheck(tempArray)
         status = false
       } else {
-        checkedIssues.map(i => {
-          if (i.id === id) {
-            status = i.status
-          }
-        })
+        checkedIssues.map(i => (i.id === id ? (status = i.status) : null))
       }
     }
     return status
   }
   function handleCheckBoxes (event, id) {
     let tempArray = []
-    checkedIssues.map(i => {
-      tempArray.push(i)
-    })
-    tempArray.map((i, index) => {
-      if (i.id === id) {
-        tempArray[index].status = event.target.checked
-      }
-    })
+    checkedIssues.map(i => tempArray.push(i))
+    tempArray.map((i, index) =>
+      i.id === id ? (tempArray[index].status = event.target.checked) : null
+    )
     setCheck(tempArray)
   }
 
