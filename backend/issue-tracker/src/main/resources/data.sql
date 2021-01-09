@@ -13,15 +13,29 @@ VALUES (600, 'My issue', 'ACTIVE', 'Issue1', '2020-02-12', '2020-10-12');
 INSERT INTO t_issue (id, issue_description, issue_status, issue_title, create_time, update_time)
 VALUES (700, 'New Issue', 'ACTIVE', 'myTitle', '2020-11-11', '2021-01-02');
 
-INSERT INTO t_users (id, username, password)
-VALUES (1000, 'Kodstar', '$2a$10$2wjebL7o4No1w3DSfTFtxO4z5C7546BACzUlxSN8vW74v0cgVKLbC');
-INSERT INTO t_users (id, username, password)
-VALUES (2000, 'admin', '$2a$10$2wjebL7o4No1w3DSfTFtxO4z5C7546BACzUlxSN8vW74v0cgVKLbC');
-INSERT INTO t_users (id, username, password)
-VALUES (3000, 'user1', '$2a$10$2wjebL7o4No1w3DSfTFtxO4z5C7546BACzUlxSN8vW74v0cgVKLbC');
-INSERT INTO t_users (id, username, password)
-VALUES (4000, 'user2', '$2a$10$2wjebL7o4No1w3DSfTFtxO4z5C7546BACzUlxSN8vW74v0cgVKLbC');
+INSERT INTO t_state (id, name)
+VALUES (1000, 'Backlog');
+INSERT INTO t_state (id, name)
+VALUES (1100, 'Planned');
+INSERT INTO t_state (id, name)
+VALUES (1200, 'In Progress');
+INSERT INTO t_state (id, name)
+VALUES (1300, 'Done');
 
+INSERT INTO t_issue_state (state_id, issue_id)
+VALUES (1000, 100);
+INSERT INTO t_issue_state (state_id, issue_id)
+VALUES (1100, 200);
+INSERT INTO t_issue_state (state_id, issue_id)
+VALUES (1200, 300);
+INSERT INTO t_issue_state (state_id, issue_id)
+VALUES (1300, 400);
+INSERT INTO t_issue_state (state_id, issue_id)
+VALUES (1200, 500);
+INSERT INTO t_issue_state (state_id, issue_id)
+VALUES (1300, 600);
+INSERT INTO t_issue_state (state_id, issue_id)
+VALUES (1000, 700);
 
 INSERT INTO t_label (id, label_name, label_color)
 VALUES (150, 'backend', '#fbca04');
@@ -100,28 +114,4 @@ INSERT INTO t_issue_comment (issue_id, comment_id)
 VALUES (600, 655);
 INSERT INTO t_issue_comment (issue_id, comment_id)
 VALUES (700, 755);
-
-INSERT INTO t_issue_assignee (issue_id, user_id)
-VALUES (100, 1000);
-INSERT INTO t_issue_assignee (issue_id, user_id)
-VALUES (100, 2000);
-INSERT INTO t_issue_assignee (issue_id, user_id)
-VALUES (200, 2000);
-INSERT INTO t_issue_assignee (issue_id, user_id)
-VALUES (200, 3000);
-INSERT INTO t_issue_assignee (issue_id, user_id)
-VALUES (300, 1000);
-INSERT INTO t_issue_assignee (issue_id, user_id)
-VALUES (400, 3000);
-INSERT INTO t_issue_assignee (issue_id, user_id)
-VALUES (500, 3000);
-INSERT INTO t_issue_assignee (issue_id, user_id)
-VALUES (600, 4000);
-INSERT INTO t_issue_assignee (issue_id, user_id)
-VALUES (700, 1000);
-INSERT INTO t_issue_assignee (issue_id, user_id)
-VALUES (700, 2000);
-INSERT INTO t_issue_assignee (issue_id, user_id)
-VALUES (500, 4000);
-
 
