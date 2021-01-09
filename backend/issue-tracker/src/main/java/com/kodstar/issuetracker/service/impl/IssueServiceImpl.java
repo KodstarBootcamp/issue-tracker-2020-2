@@ -19,9 +19,11 @@ import com.kodstar.issuetracker.service.IssueService;
 import com.kodstar.issuetracker.utils.impl.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -37,10 +39,6 @@ public class IssueServiceImpl implements IssueService {
     private final ModelMapper modelMapper;
     private final FromIssueToIssueDTO fromIssueToIssueDTO;
     private final FromIssueDTOToIssue fromIssueDTOToIssue;
-    private final FromLabelToLabelDTO fromLabelToLabelDTO;
-    private final FromLabelDTOToLabel fromLabelDTOToLabel;
-    private final FromUserToUserDTO fromUserToUserDTO;
-    private final FromUserDTOToUser fromUserDTOToUser;
     private final CommentService commentService;
     private final FromCommentDTOToComment fromCommentDTOtoComment;
 
@@ -54,7 +52,7 @@ public class IssueServiceImpl implements IssueService {
     @Autowired
     public IssueServiceImpl(IssueRepository issueRepository, LabelRepository labelRepository, UserRepository userRepository, ModelMapper modelMapper,
                             FromIssueToIssueDTO fromIssueToIssueDTO, FromIssueDTOToIssue fromIssueDTOToIssue,
-                            FromLabelToLabelDTO fromLabelToLabelDTO, FromLabelDTOToLabel fromLabelDTOToLabel, FromUserToUserDTO fromUserToUserDTO, FromUserDTOToUser fromUserDTOToUser, CommentService commentService,
+                            CommentService commentService,
                             FromCommentDTOToComment fromCommentDTOtoComment, StateRepository stateRepository) {
 
         this.issueRepository = issueRepository;
@@ -63,10 +61,6 @@ public class IssueServiceImpl implements IssueService {
         this.modelMapper = modelMapper;
         this.fromIssueToIssueDTO = fromIssueToIssueDTO;
         this.fromIssueDTOToIssue = fromIssueDTOToIssue;
-        this.fromLabelToLabelDTO = fromLabelToLabelDTO;
-        this.fromLabelDTOToLabel = fromLabelDTOToLabel;
-        this.fromUserToUserDTO = fromUserToUserDTO;
-        this.fromUserDTOToUser = fromUserDTOToUser;
         this.commentService = commentService;
         this.fromCommentDTOtoComment = fromCommentDTOtoComment;
         this.stateRepository = stateRepository;
@@ -112,6 +106,8 @@ public class IssueServiceImpl implements IssueService {
         return issueDTOList;
     }
 
+
+
     @Transactional
     @Override
     public IssueDTO addComment(Long issueId, CommentDTO commentDTO) {
@@ -156,6 +152,8 @@ public class IssueServiceImpl implements IssueService {
         issue.setState(state);
         return fromIssueToIssueDTO.convert(issueRepository.save(issue));
     }
+
+    @Override
     public List<IssueDTO> getAllIssuesOrderByUpdateTime(boolean isAscending) {
         if (isAscending) {
             return fromIssueToIssueDTO.convertAll(issueRepository.findAllByOrderByUpdateTime());
@@ -165,6 +163,7 @@ public class IssueServiceImpl implements IssueService {
 
     }
 
+    @Override
     public List<IssueDTO> getAllIssuesSort( String orderType, String byWhichSort) {
        if (byWhichSort == null) {
             return getAllIssues();
@@ -195,11 +194,14 @@ public class IssueServiceImpl implements IssueService {
     @Override
     public IssueDTO removeLabelFromIssue(Long labelId, Long issueId) {
 
-        labelRepository.removeLabelFromIssue(labelId, issueId);
-
-        Issue newIssue = issueRepository.findById(issueId)
+        Issue issue = issueRepository.findById(issueId)
                 .orElseThrow(NoSuchElementException::new);
-        return fromIssueToIssueDTO.convert(newIssue);
+
+        Label label = labelRepository.findById(labelId)
+                .orElseThrow(NoSuchElementException::new);
+
+        issue.getLabels().remove(label);
+        return fromIssueToIssueDTO.convert(issueRepository.save(issue));
     }
 
 
@@ -258,9 +260,21 @@ public class IssueServiceImpl implements IssueService {
     @Override
     public IssueDTO removeAssigneeFromIssue(Long userId, Long issueId) {
 
-        userRepository.removeAssigneeFromIssue(userId, issueId);
-        Issue newIssue = issueRepository.findById(issueId)
+        Issue issue = issueRepository.findById(issueId)
                 .orElseThrow(NoSuchElementException::new);
-        return fromIssueToIssueDTO.convert(newIssue);
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(NoSuchElementException::new);
+
+        issue.getAssignees().remove(user);
+        return fromIssueToIssueDTO.convert(issueRepository.save(issue));
+    }
+
+    @Override
+    public List<IssueDTO> findALlIssuesByCurrentUser(Principal principal) {
+        User user = userRepository.findByUsername(principal.getName());
+        List<Issue> issues = issueRepository.findAllByAssigneesContains(user);
+        return fromIssueToIssueDTO.convertAll(issues);
+
     }
 }

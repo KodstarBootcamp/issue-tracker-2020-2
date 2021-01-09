@@ -3,14 +3,17 @@ package com.kodstar.issuetracker.api;
 import com.kodstar.issuetracker.dto.CommentDTO;
 import com.kodstar.issuetracker.dto.IssueDTO;
 
+import com.kodstar.issuetracker.dto.UserDTO;
 import com.kodstar.issuetracker.service.IssueService;
 import org.springframework.lang.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.*;
 
 
@@ -20,8 +23,6 @@ public class IssueController {
 
     private final IssueService issueService;
     private final static String ASCENDING="asc" ;
-    private final static String DESCENDING="desc" ;
-    private final static String ORDER_TYPE_ERROR_MESSAGE=" Recieved OrderType is : %s .\nOrder Type must be asc or desc.";
 
     @Autowired
     public IssueController(IssueService issueService) {
@@ -116,5 +117,11 @@ public class IssueController {
     public ResponseEntity<IssueDTO> updateStateOfIssue(@PathVariable Long issueId, @PathVariable Long stateId) {
         return new ResponseEntity(issueService.updateState(issueId, stateId), HttpStatus.OK);
     }
+
+    @GetMapping("issues/user/issues")
+    public ResponseEntity<List<IssueDTO>> getAllIssuesByCurrentUser( Principal principal) {
+        return new ResponseEntity(issueService.findALlIssuesByCurrentUser(principal), HttpStatus.OK);
+    }
+
 
 }

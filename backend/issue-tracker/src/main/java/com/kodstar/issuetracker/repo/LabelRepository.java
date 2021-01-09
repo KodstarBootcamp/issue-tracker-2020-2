@@ -15,8 +15,4 @@ import java.util.List;
 public interface LabelRepository extends CrudRepository<Label, Long> {
 
 
-    @Modifying
-    @Transactional
-    @Query(value = "DELETE FROM t_issue_label WHERE label_id = :labelId and issue_id = :issueId", nativeQuery = true)
-    void removeLabelFromIssue(@Param("labelId") Long labelId, @Param("issueId") Long IssueId);
 }
