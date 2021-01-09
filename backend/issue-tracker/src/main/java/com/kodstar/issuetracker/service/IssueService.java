@@ -7,6 +7,7 @@ import com.kodstar.issuetracker.dto.LabelDTO;
 import com.kodstar.issuetracker.dto.UserDTO;
 import com.kodstar.issuetracker.entity.Comment;
 import com.kodstar.issuetracker.entity.Issue;
+import com.kodstar.issuetracker.entity.Label;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -38,7 +39,7 @@ public interface IssueService {
 
     List<IssueDTO> findALlByDescKeyword(String keyword);
 
-    List<IssueDTO> findALlIssuesByLabel(String keyword);
+    List<IssueDTO> findAllByLabelsContains(Long labelId);
 
     IssueDTO addComment(Long issueId, CommentDTO commentDTO);
 

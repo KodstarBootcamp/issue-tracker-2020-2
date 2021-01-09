@@ -101,8 +101,12 @@ public class IssueServiceImpl implements IssueService {
     }
 
     @Override
-    public List<IssueDTO> findALlIssuesByLabel(String keyword) {
-        List<IssueDTO> issueDTOList = fromIssueToIssueDTO.convertAll(issueRepository.findALlIssuesByLabel(keyword));
+    public List<IssueDTO> findAllByLabelsContains(Long labelId) {
+
+        Label label = labelRepository.findById(labelId)
+                .orElseThrow(NoSuchElementException::new);
+
+        List<IssueDTO> issueDTOList = fromIssueToIssueDTO.convertAll(issueRepository.findAllByLabelsContains(label));
         return issueDTOList;
     }
 

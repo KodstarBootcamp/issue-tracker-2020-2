@@ -8,6 +8,7 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.Where;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.domain.Persistable;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
@@ -27,7 +28,7 @@ import java.util.Set;
 @Where(clause = "issue_status <> 'DELETED'") // '<>' meaning is NOT
 @Table(name = "t_issue")
 @EntityListeners(AuditingEntityListener.class)
-public class Issue implements Serializable {
+public class Issue implements Serializable, Persistable<Long> {
 
 
     @Id
@@ -73,5 +74,14 @@ public class Issue implements Serializable {
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinTable(name = "t_issue_assignee", joinColumns = @JoinColumn(name = "issue_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Set<User> assignees = new HashSet<>();
+
+    @Override
+    public boolean isNew() {
+
+        for (Label label:labels) {
+            return null == getId() && label.getId() == null;
+        }
+            return false;
+    }
 
 }
