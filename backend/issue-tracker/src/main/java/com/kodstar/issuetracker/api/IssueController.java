@@ -3,12 +3,15 @@ package com.kodstar.issuetracker.api;
 import com.kodstar.issuetracker.dto.CommentDTO;
 import com.kodstar.issuetracker.dto.IssueDTO;
 
+import com.kodstar.issuetracker.dto.PagesDTO;
 import com.kodstar.issuetracker.exceptionhandler.InvalidQueryParameterException;
 import com.kodstar.issuetracker.entity.Comment;
 import com.kodstar.issuetracker.entity.Issue;
 import com.kodstar.issuetracker.exceptionhandler.InvalidQueryParameterException;
 import com.kodstar.issuetracker.service.IssueService;
 import com.kodstar.issuetracker.service.LabelsOfIssueService;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,9 +28,9 @@ public class IssueController {
 
     private final IssueService issueService;
     private final LabelsOfIssueService labelsOfIssueService;
-    private final static String ASCENDING="asc" ;
-    private final static String DESCENDING="desc" ;
-    private final static String ORDER_TYPE_ERROR_MESSAGE=" Recieved OrderType is : %s .\nOrder Type must be asc or desc.";
+    private final static String ASCENDING = "asc";
+    private final static String DESCENDING = "desc";
+    private final static String ORDER_TYPE_ERROR_MESSAGE = " Recieved OrderType is : %s .\nOrder Type must be asc or desc.";
 
     @Autowired
     public IssueController(IssueService issueService, LabelsOfIssueService labelsOfIssueService) {
@@ -36,13 +39,15 @@ public class IssueController {
     }
 
 
-   @GetMapping("/issues")
-   public ResponseEntity<List<IssueDTO>> getAllIssues(@RequestParam(required = false, defaultValue = ASCENDING, value = "orderType") String orderType,
-                                                      @RequestParam(required = false, value = "byWhichSort") String byWhichSort) {
+    @GetMapping("/issues")
+    public ResponseEntity<PagesDTO<IssueDTO>> getAllIssues(@RequestParam(required = false, defaultValue = ASCENDING, value = "orderType") String orderType,
+                                                           @RequestParam(required = false, value = "byWhichSort") String byWhichSort,
+                                                           @RequestParam(required = false, defaultValue = "0") int page,
+                                                           @RequestParam(required = false, defaultValue = "10") int size) {
+        System.out.println(page);
+        return new ResponseEntity<>(issueService.getAllIssuesSort(orderType, byWhichSort, PageRequest.of(page, size)), HttpStatus.OK);
 
-           return new ResponseEntity<>(issueService.getAllIssuesSort(orderType,byWhichSort), HttpStatus.OK);
-
-   }
+    }
 
 
     @GetMapping("/issue/{issueId}")
@@ -98,7 +103,7 @@ public class IssueController {
 
     @DeleteMapping("issue/{issueId}/comment/{commentId}")
     public void deleteComment(@PathVariable Long issueId, @PathVariable Long commentId) {
-        issueService.deleteComment( issueId, commentId);
+        issueService.deleteComment(issueId, commentId);
     }
 
     @PutMapping("issue/{issueId}/state/{stateId}")
