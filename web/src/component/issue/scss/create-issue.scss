@@ -1,0 +1,111 @@
+.create-container {
+  background: url("../../../asset/create_background.jpg") no-repeat;
+  background-size: cover;
+  padding-bottom: 20px;
+  background-position: center;
+  .issue-container {
+    background-color: rgba(52, 58, 64, 0.8);
+    height: auto;
+    margin-top: 40px;
+    border-radius: 5px;
+    padding: 40px 80px 60px 80px;
+    color: #eee;
+
+    .add-title,
+    .add-description {
+      background-color: transparent;
+      border: 0.5px solid #222;
+      border-radius: 5px;
+      box-shadow: 0px 0px 20px 3px rgba(34, 34, 34, 0.68);
+      -webkit-box-shadow: 0px 0px 20px 3px rgba(34, 34, 34, 0.68);
+      -moz-box-shadow: 0px 0px 20px 3px rgba(34, 34, 34, 0.68);
+      color: #eee;
+    }
+    .add-title {
+      height: 50px;
+      padding-left: 20px;
+    }
+    .add-description {
+      resize: none;
+      padding: 20px 20px;
+      width: 100%;
+      height: 200px;
+    }
+    .add-description:focus {
+      box-shadow: none;
+    }
+
+    .description-label {
+      margin-top: 10px;
+    }
+
+    .submit-issue {
+      margin-top: 10px;
+    }
+  }
+  .issue-props-container {
+    background-color: rgba(52, 58, 64, 0.8);
+    height: 400px;
+    margin-top: 40px;
+    border-radius: 5px;
+    margin-left: 10px;
+    .label-dropdown {
+      margin-top: 20px;
+      .selected-labels-container {
+        display: flow-root;
+        text-align: center;
+        .added-labels {
+          padding: 4px 15px;
+          display: inline-block;
+          cursor: pointer;
+          margin: 0 2px;
+          text-align: center;
+          color: #eee;
+        }
+        .added-labels:hover {
+          border: 0.5px solid #dc3545;
+          color: transparent;
+          background: url("../../../asset/remove_circle_outline-black-18dp.svg")
+            no-repeat center !important;
+        }
+      }
+      .label-dropdown-container {
+        width: 100%;
+        top: 45px;
+        left: -125px;
+        padding: 10px;
+        text-align: left;
+        border-radius: 5px;
+        background-color: #212529;
+        form {
+          padding: 2px;
+          .form-control {
+            background-color: #212529;
+            color: #eee;
+            border-color: #343a40;
+          }
+          .clean-icon {
+            content: url("../../../asset/clean.svg");
+            width: 1.2rem;
+            height: 1.2rem;
+          }
+          .btn {
+            padding: 5px 10px;
+          }
+        }
+        .dropdown-item {
+          padding-left: 20px;
+          background-color: #212529;
+          color: #eee;
+          border-radius: 3px;
+          .badge {
+            margin-right: 10px;
+          }
+        }
+        .dropdown-item:hover {
+          background-color: #343a40;
+        }
+      }
+    }
+  }
+}

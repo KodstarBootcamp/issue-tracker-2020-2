@@ -4,7 +4,12 @@ import { getIssues } from './getIssues'
 export const deleteSelectedIssues = async issueList => {
   const url = 'http://localhost:8080/issues/' + issueList
 
-  await axios.delete(url)
+  const header = {
+    Authorization:
+      'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTYxMTA2NzY5Mn0.gusU3gRCFY3hZxv0ESw0yU5qYPK-KxuLcxsygK2EjXmtzR82OZPsYFS8qm8gNYNqWZTr265bnbp4_4O2nj6deg'
+  }
+
+  await axios.delete(url, { headers: header })
   const response = getIssues()
 
   return response

@@ -7,7 +7,7 @@ import {
   Dropdown,
   Badge,
   InputGroup,
-  Button
+  Button,
 } from 'react-bootstrap'
 import Issue from '../../model/issue/Issue'
 import { getLabels } from '../../service/getLabels'
@@ -71,7 +71,8 @@ export default function Issues () {
   ]
 
   return (
-    <Container className='issue-container'>
+    <div className="issues">
+      <Container className='issue-container'>
       <Navbar collapseOnSelect expand='lg' bg='dark' variant='dark'>
         <Form>
           <Form.Check
@@ -175,6 +176,14 @@ export default function Issues () {
                 })}
               </Dropdown.Menu>
             </Dropdown>
+            <Button
+              href='/issues/new'
+              type='button'
+              className='add-issue-btn'
+              variant='outline-success'
+            >
+              Add Issue
+            </Button>
           </Nav>
         </Navbar.Collapse>
       </Navbar>
@@ -186,5 +195,6 @@ export default function Issues () {
         deleteSelections={deleteSelected}
       />
     </Container>
+    </div>
   )
 }

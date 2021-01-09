@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Badge, Form, FormCheck, Table } from 'react-bootstrap'
+import { Badge, Button, Form, FormCheck, Table } from 'react-bootstrap'
 import { getFilteredIssues } from '../../service/getFilteredIssues'
 import { getSortedIssues } from '../../service/getSortedIssues'
 import { deleteSelectedIssues } from '../../service/deleteSelectedIssues'
@@ -112,7 +112,17 @@ export default function Issue (props) {
                   </Form>
                 </div>
                 <div className='issue-body col-6'>
-                  <h4>{issue.title}</h4>
+                  <h4>
+                    {issue.title}
+                    <div className='edit-delete'>
+                      <Button variant='info' href={'/issues/detail/'+issue.id}>
+                        <i className='edit-icon'></i>
+                      </Button>
+                      <Button variant='danger'>
+                        <i className='delete-icon'></i>
+                      </Button>
+                    </div>
+                  </h4>
                   <p className='description-text'>{issue.description}</p>
                 </div>
                 <div className='offset-1 col-2 times'>
