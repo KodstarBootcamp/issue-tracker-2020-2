@@ -8,9 +8,11 @@ import org.springframework.lang.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.*;
 
 
@@ -115,6 +117,11 @@ public class IssueController {
     @PutMapping("issue/{issueId}/state/{stateId}")
     public ResponseEntity<IssueDTO> updateStateOfIssue(@PathVariable Long issueId, @PathVariable Long stateId) {
         return new ResponseEntity(issueService.updateState(issueId, stateId), HttpStatus.OK);
+    }
+
+    @GetMapping("issues/user/issues")
+    public ResponseEntity<List<IssueDTO>> getAllIssuesByCurrentUser( Principal principal) {
+        return new ResponseEntity(issueService.findALlIssuesByCurrentUser(principal), HttpStatus.OK);
     }
 
 }

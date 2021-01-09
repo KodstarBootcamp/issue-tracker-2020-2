@@ -11,9 +11,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.Param;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
+import java.security.Principal;
 import java.util.List;
 
 
@@ -57,4 +59,6 @@ public interface IssueService {
     IssueDTO addAssignee(Long userId, Long issueId);
 
     IssueDTO removeAssigneeFromIssue(Long userId, Long issueId);
+
+    List<IssueDTO> findALlIssuesByCurrentUser(Principal principal);
 }

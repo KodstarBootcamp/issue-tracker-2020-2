@@ -1,5 +1,6 @@
 package com.kodstar.issuetracker.repo;
 
+import com.kodstar.issuetracker.auth.User;
 import com.kodstar.issuetracker.entity.Issue;
 
 import org.springframework.data.jpa.repository.Query;
@@ -11,6 +12,7 @@ import java.util.List;
 
 @Repository
 public interface IssueRepository extends CrudRepository<Issue, Long> {
+
     List<Issue> findAll();
 
     @Query(value = "select * from t_issue i where i.issue_title like %:keyword%", nativeQuery = true)
@@ -38,6 +40,9 @@ public interface IssueRepository extends CrudRepository<Issue, Long> {
     List<Issue> findAllByOrderByUpdateTime();
 
     List<Issue> findAllByOrderByUpdateTimeDesc();
+
+    List<Issue> findAllByAssigneesContains(User user);
+
 
 
 }

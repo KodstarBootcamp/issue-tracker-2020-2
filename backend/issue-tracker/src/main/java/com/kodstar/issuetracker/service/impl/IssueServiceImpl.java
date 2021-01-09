@@ -19,9 +19,11 @@ import com.kodstar.issuetracker.service.IssueService;
 import com.kodstar.issuetracker.utils.impl.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -111,6 +113,8 @@ public class IssueServiceImpl implements IssueService {
         List<IssueDTO> issueDTOList = fromIssueToIssueDTO.convertAll(issueRepository.findALlIssuesByLabel(keyword));
         return issueDTOList;
     }
+
+
 
     @Transactional
     @Override
@@ -262,5 +266,13 @@ public class IssueServiceImpl implements IssueService {
         Issue newIssue = issueRepository.findById(issueId)
                 .orElseThrow(NoSuchElementException::new);
         return fromIssueToIssueDTO.convert(newIssue);
+    }
+
+    @Override
+    public List<IssueDTO> findALlIssuesByCurrentUser(Principal principal) {
+        User user = userRepository.findByUsername(principal.getName());
+        List<Issue> issues = issueRepository.findAllByAssigneesContains(user);
+        return fromIssueToIssueDTO.convertAll(issues);
+
     }
 }
