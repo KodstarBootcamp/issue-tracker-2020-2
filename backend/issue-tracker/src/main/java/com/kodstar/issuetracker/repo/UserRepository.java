@@ -13,8 +13,4 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
      User findByUsername(String username);
 
-     @Modifying
-     @Transactional
-     @Query(value = "DELETE FROM t_issue_assignee WHERE user_id = :userId and issue_id = :issueId", nativeQuery = true)
-     void removeAssigneeFromIssue(@Param("userId") Long userId, @Param("issueId") Long IssueId);
 }

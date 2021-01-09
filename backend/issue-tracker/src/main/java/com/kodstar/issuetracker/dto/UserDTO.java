@@ -15,5 +15,6 @@ public class UserDTO {
     @NotBlank(message = "invalid input, Title can't be null")
     private String username;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 }
