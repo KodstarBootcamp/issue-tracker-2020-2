@@ -4,6 +4,7 @@ import com.kodstar.issuetracker.auth.User;
 import com.kodstar.issuetracker.dto.CommentDTO;
 import com.kodstar.issuetracker.dto.IssueDTO;
 import com.kodstar.issuetracker.dto.UserDTO;
+import com.kodstar.issuetracker.dto.PagesDTO;
 import com.kodstar.issuetracker.entity.Comment;
 import com.kodstar.issuetracker.entity.Issue;
 import com.kodstar.issuetracker.entity.Label;
@@ -20,6 +21,9 @@ import com.kodstar.issuetracker.utils.impl.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,10 +48,10 @@ public class IssueServiceImpl implements IssueService {
 
     private final StateRepository stateRepository;
 
-    private final static String ASCENDING="asc" ;
-    private final static String DESCENDING="desc" ;
-    private final static String ORDER_TYPE_ERROR_MESSAGE=" Recieved OrderType is : %s .\nOrder Type must be asc or desc.";
-
+    private final static String ASCENDING = "asc";
+    private final static String DESCENDING = "desc";
+    private final static String ORDER_TYPE_ERROR_MESSAGE = " Recieved OrderType is : %s\nOrder Type must be asc or desc";
+    private final static String SORT_TYPE_ERROR_MESSAGE = " Sort Type can be just createDate or update";
 
     @Autowired
     public IssueServiceImpl(IssueRepository issueRepository, LabelRepository labelRepository, UserRepository userRepository, ModelMapper modelMapper,
@@ -74,9 +78,11 @@ public class IssueServiceImpl implements IssueService {
     }
 
     @Override
-    public List<IssueDTO> getAllIssues() {
-        List<IssueDTO> issueDTOList = fromIssueToIssueDTO.convertAll(issueRepository.findAll());
-        return issueDTOList;
+    public PagesDTO<IssueDTO> getAllIssues(Pageable paging) {
+        Page<Issue> pages = issueRepository.findAll(paging);
+        PagesDTO<IssueDTO> pagesDTO = new PagesDTO<>();
+        modelMapper.map(pages, pagesDTO);
+        return pagesDTO;
     }
 
     @Override
@@ -110,8 +116,6 @@ public class IssueServiceImpl implements IssueService {
         return issueDTOList;
     }
 
-
-
     @Transactional
     @Override
     public IssueDTO addComment(Long issueId, CommentDTO commentDTO) {
@@ -123,26 +127,34 @@ public class IssueServiceImpl implements IssueService {
     }
 
     @Override
-    public void deleteComment(Long issueId,Long commentId) {
+    public void deleteComment(Long issueId, Long commentId) {
         Issue issue = issueRepository.findById(issueId)
-                .orElseThrow(()->new IssueTrackerNotFoundException("Issue",issueId.toString()));
-        Optional<Comment> comment=issue.getComments().stream()
-                .filter(x->x.getId()==commentId)
+                .orElseThrow(() -> new IssueTrackerNotFoundException("Issue", issueId.toString()));
+        Optional<Comment> comment = issue.getComments().stream()
+                .filter(x -> x.getId().equals(commentId))
                 .findFirst();
-        if(comment.isPresent()){
+        if (comment.isPresent()) {
             issue.getComments().remove(comment.get());
-        }else{
-            throw new IssueTrackerNotFoundException("Comment",commentId.toString());
+        } else {
+            throw new IssueTrackerNotFoundException("Comment", commentId.toString());
         }
         issueRepository.save(issue);
     }
 
     @Override
-    public List<IssueDTO> getAllIssuesOrderByCreateTime(boolean isAscending) {
+    public PagesDTO<IssueDTO> getAllIssuesOrderByCreateTime(boolean isAscending, Pageable paging) {
         if (isAscending) {
-            return fromIssueToIssueDTO.convertAll(issueRepository.findAllByOrderByCreateTime());
+
+            Page<Issue> pages = issueRepository.findAllByOrderByCreateTime(paging);
+            PagesDTO<IssueDTO> pagesDTO = new PagesDTO<>();
+            modelMapper.map(pages, pagesDTO);
+            return pagesDTO;
+
         } else {
-            return fromIssueToIssueDTO.convertAll(issueRepository.findAllByOrderByCreateTimeDesc());
+            Page<Issue> pages = issueRepository.findAllByOrderByCreateTimeDesc(paging);
+            PagesDTO<IssueDTO> pagesDTO = new PagesDTO<>();
+            modelMapper.map(pages, pagesDTO);
+            return pagesDTO;
         }
 
     }
@@ -158,41 +170,49 @@ public class IssueServiceImpl implements IssueService {
     }
 
     @Override
-    public List<IssueDTO> getAllIssuesOrderByUpdateTime(boolean isAscending) {
+    public PagesDTO<IssueDTO> getAllIssuesOrderByUpdateTime(boolean isAscending, Pageable paging) {
         if (isAscending) {
-            return fromIssueToIssueDTO.convertAll(issueRepository.findAllByOrderByUpdateTime());
+            Page<Issue> pages = issueRepository.findAllByOrderByUpdateTime(paging);
+            PagesDTO<IssueDTO> pagesDTO = new PagesDTO<>();
+            modelMapper.map(pages, pagesDTO);
+            return pagesDTO;
+
         } else {
-            return fromIssueToIssueDTO.convertAll(issueRepository.findAllByOrderByUpdateTimeDesc());
+            Page<Issue> pages = issueRepository.findAllByOrderByUpdateTimeDesc(paging);
+            PagesDTO<IssueDTO> pagesDTO = new PagesDTO<>();
+            modelMapper.map(pages, pagesDTO);
+            return pagesDTO;
+
         }
 
     }
 
     @Override
-    public List<IssueDTO> getAllIssuesSort( String orderType, String byWhichSort) {
-       if (byWhichSort == null) {
-            return getAllIssues();
+    public PagesDTO<IssueDTO> getAllIssuesSort(String orderType, String byWhichSort, Pageable paging) {
+        if (byWhichSort == null) {
+            return getAllIssues(paging);
         }
 
         if (byWhichSort.equalsIgnoreCase("createDate")) {
             if (orderType.equalsIgnoreCase(ASCENDING)) {
-                return getAllIssuesOrderByCreateTime(true);
+                return getAllIssuesOrderByCreateTime(true, paging);
             } else if (orderType.equalsIgnoreCase(DESCENDING)) {
-                return getAllIssuesOrderByCreateTime(false);
+                return getAllIssuesOrderByCreateTime(false, paging);
             } else {
                 throw new InvalidQueryParameterException(String.format(ORDER_TYPE_ERROR_MESSAGE, orderType));
             }
         } else if (byWhichSort.equalsIgnoreCase("update")) {
             if (orderType.equalsIgnoreCase(ASCENDING)) {
-                return getAllIssuesOrderByUpdateTime(true);
+                return getAllIssuesOrderByUpdateTime(true, paging);
 
             } else if (orderType.equalsIgnoreCase(DESCENDING)) {
-                return getAllIssuesOrderByUpdateTime(false);
+                return getAllIssuesOrderByUpdateTime(false, paging);
             } else {
                 throw new InvalidQueryParameterException(String.format(ORDER_TYPE_ERROR_MESSAGE, orderType));
             }
 
         } else {
-            throw new InvalidQueryParameterException(String.format(ORDER_TYPE_ERROR_MESSAGE, orderType));
+            throw new InvalidQueryParameterException(SORT_TYPE_ERROR_MESSAGE);
         }
     }
     @Override
@@ -281,4 +301,5 @@ public class IssueServiceImpl implements IssueService {
         return fromIssueToIssueDTO.convertAll(issues);
 
     }
+
 }

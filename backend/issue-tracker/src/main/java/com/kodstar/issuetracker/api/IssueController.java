@@ -4,7 +4,14 @@ import com.kodstar.issuetracker.dto.CommentDTO;
 import com.kodstar.issuetracker.dto.IssueDTO;
 
 import com.kodstar.issuetracker.dto.UserDTO;
+import com.kodstar.issuetracker.dto.PagesDTO;
+import com.kodstar.issuetracker.exceptionhandler.InvalidQueryParameterException;
+import com.kodstar.issuetracker.entity.Comment;
+import com.kodstar.issuetracker.entity.Issue;
+import com.kodstar.issuetracker.exceptionhandler.InvalidQueryParameterException;
 import com.kodstar.issuetracker.service.IssueService;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,10 +39,13 @@ public class IssueController {
 
 
     @GetMapping("/issues")
-    public ResponseEntity<List<IssueDTO>> getAllIssues(@RequestParam(required = false, defaultValue = ASCENDING, value = "orderType") String orderType,
-                                                       @RequestParam(required = false, value = "byWhichSort") String byWhichSort) {
+    public ResponseEntity<PagesDTO<IssueDTO>> getAllIssues(@RequestParam(required = false, defaultValue = ASCENDING, value = "orderType") String orderType,
+                                                           @RequestParam(required = false, value = "byWhichSort") String byWhichSort,
+                                                           @RequestParam(required = false, defaultValue = "0") int page,
+                                                           @RequestParam(required = false, defaultValue = "10") int size) {
+        System.out.println(page);
+        return new ResponseEntity<>(issueService.getAllIssuesSort(orderType, byWhichSort, PageRequest.of(page, size)), HttpStatus.OK);
 
-        return new ResponseEntity<>(issueService.getAllIssuesSort(orderType, byWhichSort), HttpStatus.OK);
 
     }
 

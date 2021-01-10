@@ -9,6 +9,7 @@ import com.kodstar.issuetracker.entity.Comment;
 import com.kodstar.issuetracker.entity.Issue;
 import com.kodstar.issuetracker.entity.Label;
 import org.springframework.data.domain.Page;
+import com.kodstar.issuetracker.dto.PagesDTO;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.Param;
@@ -28,10 +29,9 @@ public interface IssueService {
 
     void deleteIssue(Long issueId);
 
-    List<IssueDTO> getAllIssues();
+    PagesDTO<IssueDTO> getAllIssues(Pageable paging);
 
     IssueDTO findById(Long issueId);
-
 
     void deleteSelectedIssues(List<Long> selectedIssueIds);
 
@@ -45,14 +45,13 @@ public interface IssueService {
 
     void deleteComment(Long issueId, Long commentId);
 
-    List<IssueDTO> getAllIssuesOrderByCreateTime(boolean isAscending);
+    PagesDTO<IssueDTO> getAllIssuesOrderByCreateTime(boolean isAscending, Pageable paging);
 
     IssueDTO updateState(Long issueId, Long stateId);
 
-    List<IssueDTO> getAllIssuesOrderByUpdateTime(boolean isAscending);
+    PagesDTO<IssueDTO> getAllIssuesOrderByUpdateTime(boolean isAscending, Pageable paging);
 
-    List<IssueDTO> getAllIssuesSort( String orderType, String byWhichSort);
-
+    PagesDTO<IssueDTO> getAllIssuesSort(String orderType, String byWhichSort, Pageable paging);
     IssueDTO addLabel(Long labelId, Long issueId);
 
     IssueDTO removeLabelFromIssue(Long labelId, Long issueId);
