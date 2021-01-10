@@ -1,0 +1,116 @@
+.issue-detail-container {
+  .issue-card {
+    padding: 10px 20px;
+    background-color: #343a40;
+    border-radius: 0 0 15px 15px;
+    color: #eee;
+    z-index: 1;
+
+    .edit-container {
+      .title-edit {
+        margin-bottom: 5px;
+      }
+      .cancel-btn {
+        margin-left: 5px;
+      }
+    }
+
+    .labels {
+      margin-left: 5px;
+      cursor: pointer;
+    }
+  }
+  .issue-comments {
+    background-color: #212529;
+    position: relative;
+    top: -126px;
+    padding: 100px 100px;
+    border-radius: 0 0 15px 15px;
+    color: #eee;
+    .timeline {
+      position: relative;
+      left: 33px;
+      top: 75px;
+      z-index: 1;
+      background-color: #212529;
+      width: 30px;
+      height: 30px;
+      padding: 3px;
+      .comment-icon {
+        content: url("../../../asset/textsms-24px.svg");
+      }
+    }
+    .comment-body-container {
+      padding: 10px 0;
+    }
+    .comment-body {
+      border: 1px solid #343a40;
+      border-radius: 5px;
+      padding: 0;
+      .comment-header {
+        display: flex;
+        background-color: #343a40;
+        border-radius: 5px 5px 0 0;
+        padding: 5px;
+        h6 {
+          margin-bottom: 0;
+        }
+      }
+      .comment-text {
+        padding-left: 10px;
+        p {
+          font-size: 15px;
+          padding: 10px 20px;
+        }
+      }
+    }
+    .comment-body::before {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: -30px;
+      display: block;
+      width: 2px;
+      content: "";
+      background-color: #212d2a;
+    }
+    .comment-form {
+      padding: 0 100px;
+      display: flex;
+      margin-top: 90px;
+      .comment-textarea {
+        resize: none;
+        background-color: #343a40;
+        border: none;
+        height: 100px;
+        color: #eee;
+      }
+      .add-comment-btn {
+        position: relative;
+      }
+    }
+  }
+  .icon-container {
+    padding: 0 5px;
+    text-align: right;
+    .edit-comment {
+      padding: 5px;
+      width: 1.5rem;
+      height: 1.5rem;
+      padding: 1px;
+      .edit-comment-icon {
+        content: url("../../../asset/create-black-18dp.svg");
+      }
+    }
+    .delete-comment {
+      padding: 5px;
+      width: 1.5rem;
+      height: 1.5rem;
+      padding: 1px;
+      margin-left: 3px;
+      .delete-comment-icon {
+        content: url("../../../asset/remove_circle_outline-black-18dp.svg");
+      }
+    }
+  }
+}

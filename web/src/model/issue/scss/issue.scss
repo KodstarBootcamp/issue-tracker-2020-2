@@ -1,6 +1,7 @@
 .table {
   margin-top: 0.5px;
   border-radius: 5px;
+  opacity: 0.9;
   .row {
     margin-left: 0;
     margin-right: 0;
@@ -9,7 +10,6 @@
       cursor: pointer;
       border: none;
       border-bottom: 1px solid #5c6671;
-
       .times {
         display: inline-block;
         padding-right: 0;
@@ -32,6 +32,29 @@
         margin-left: 20px;
         top: -30%;
 
+        .edit-delete {
+          display: inline-block;
+          margin-left: 20px;
+          .btn {
+            padding: 0;
+            width: 1.2rem;
+            height: 1.2rem;
+            .edit-icon {
+              content: url("../../../asset/create-black-18dp.svg");
+              width: 1rem;
+              height: 1rem;
+            }
+            .delete-icon {
+              content: url("../../../asset/remove_circle_outline-black-18dp.svg");
+              width: 1rem;
+              height: 1rem;
+            }
+          }
+          .btn-info {
+            margin-right: 3px;
+          }
+        }
+
         .description-text {
           font-size: 13px;
         }
@@ -41,8 +64,9 @@
         font-size: 12px;
         padding-right: 10px;
         padding-top: 10px;
-         .date, .hour{
-           display: inline-block;
+        .date,
+        .hour {
+          display: inline-block;
           color: #212529;
           font-size: 14px;
           margin-bottom: 2px;
@@ -51,6 +75,7 @@
       .labels-container {
         display: inline-block;
         position: absolute;
+        padding-left: 0;
 
         .labels {
           display: flow-root;

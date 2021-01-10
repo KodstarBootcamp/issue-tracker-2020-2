@@ -1,16 +1,29 @@
 import React from 'react'
-import { Nav, Navbar } from 'react-bootstrap'
+import { Button, Nav, Navbar } from 'react-bootstrap'
 
 export function Navigation () {
+
+  const logout = () => {
+    localStorage.removeItem('token')
+    window.location.reload()
+  }
+
   return (
-    <Navbar expand='lg' variant='dart' bg='dark'>
-      <Navbar.Brand variant='light' href='#'>
+    <Navbar expand='lg' variant='dart' bg='dark' style={{ zIndex: '100' }}>
+      <Navbar.Brand variant='light' href='/'>
         Issue Tracker
       </Navbar.Brand>
-      <Nav className='mr-auto'>
-        <Nav.Link href='home'>Home</Nav.Link>
-        <Nav.Link href='issues'>Issues</Nav.Link>
-      </Nav>
+      <Navbar.Toggle
+        aria-controls='basic-navbar-nav'
+        style={{ background: '#007bff' }}
+      />
+      <Navbar.Collapse id='basic-navbar-nav'>
+        <Nav className='mr-auto'>
+          <Nav.Link href='/'>Home</Nav.Link>
+          <Nav.Link href='/issues'>Issues</Nav.Link>
+        </Nav>
+        <Button onClick={() => logout()}>Log out</Button>
+      </Navbar.Collapse>
     </Navbar>
   )
 }

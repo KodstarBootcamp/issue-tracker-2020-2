@@ -1,1 +1,2 @@
-export const base_url = "localhost:8080/virtserver.swaggerhub.com/Kodstar/Issue_Tracker/1.0.0"
+export const barer_token =
+  'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTYxMTE3Nzg0MX0.zot1YFViXizBjXWuBO7Hrp4A5QsGnlZIc2e4LmlA7YBCkQ-WrkYkQf5KF7GINeK6T0DX1U6aNT_azHrTzbDH9g'

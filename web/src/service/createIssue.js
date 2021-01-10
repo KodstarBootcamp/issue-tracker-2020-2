@@ -1,21 +1,18 @@
 import axios from 'axios'
+import { barer_token } from '../custom/httpCustomValues'
 
 export const createIssue = async (title, description, labels) => {
-  const url = 'http://localhost:8080/virtserver.swaggerhub.com/Kodstar/Issue_Tracker/1.0.0/issue'
+  const url = 'issue'
 
   let issue = {
     title: title,
     description: description,
-    labels: []
+    labels: labels
   }
-
-  labels.forEach(element => {
-    issue.labels.push({ labelName: element.substring(1) })
-  })
+  
 
   const response = await axios.post(url, issue, {
-    headers: { 'content-type': 'application/json' }
+    headers: { Authorization: barer_token }
   })
-  window.location.reload()
   return response
 }

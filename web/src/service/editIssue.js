@@ -1,22 +1,26 @@
 import axios from 'axios'
+import { barer_token } from '../custom/httpCustomValues'
 
-export const editIssue = async (id, title, description, labels) => {
-  const url = 'http://localhost:8080/virtserver.swaggerhub.com/Kodstar/Issue_Tracker/1.0.0/issue/' + id
+export const editIssue = async (id, title, description) => {
+  const url = 'issue/' + id
 
   let issue = {
     title: title,
-    description: description,
-    labels: []
+    description: description
   }
 
-  labels.forEach(element => {
-    issue.labels.push({ labelName: element.labelName })
-  })
+  const headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': '*',
+    Authorization: barer_token,
+    'Content-Type': 'application/json'
+  }
 
   const response = await axios
-    .put(url, issue)
-    .catch(error => console.log(error))
+    .put(url, issue, {
+      headers: headers
+    })
+    .catch(e => console.log(e))
 
-  window.location.reload()
   return response
 }

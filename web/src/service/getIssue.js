@@ -1,8 +1,10 @@
 import axios from 'axios'
+import { barer_token } from '../custom/httpCustomValues'
 
 export async function getIssue (id) {
-  const url = 'http://localhost:8080/issue/' + id
+  const url = 'issue/' + id
 
-  const response = await axios.get(url)
+
+  const response = await axios.get(url, { headers: {Authorization:barer_token}})
   return response
 }
