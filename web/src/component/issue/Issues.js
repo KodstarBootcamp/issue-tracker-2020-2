@@ -7,7 +7,7 @@ import {
   Dropdown,
   Badge,
   InputGroup,
-  Button,
+  Button
 } from 'react-bootstrap'
 import Issue from '../../model/issue/Issue'
 import { getLabels } from '../../service/getLabels'
@@ -71,130 +71,130 @@ export default function Issues () {
   ]
 
   return (
-    <div className="issues">
+    <div className='issues'>
       <Container className='issue-container'>
-      <Navbar collapseOnSelect expand='lg' bg='dark' variant='dark'>
-        <Form>
-          <Form.Check
-            checked={check}
-            onChange={e => {
-              handleCheckBox(e)
-            }}
-          ></Form.Check>
-          <button
-            type='button'
-            className='delete-all'
-            style={{ visibility: showDeleteButton }}
-            onClick={() => sendDelete()}
-          >
-            <i className='delete-all-icon'></i>
-            <span className='delete-all-text'>{'(delete all)'}</span>
-          </button>
-          <div className='search-container'>
-            <Form.Control
-              className='search'
-              placeholder='title(default):  description:  label:'
-              onChange={handleFilterIssue.bind(this)}
-              value={filterIssue}
-            ></Form.Control>
-          </div>
-        </Form>
-        <Navbar.Toggle aria-controls='responsive-navbar-nav' />
-        <Navbar.Collapse id='responsive-navbar-nav'>
-          <Nav className='mr-auto'></Nav>
-          <Nav>
-            <Dropdown className='sort-dropdown'>
-              <Dropdown.Toggle id='dropdown-sort' variant='outline-info'>
-                Sort
-              </Dropdown.Toggle>
-              <Dropdown.Menu className='sort-dropdown-container'>
-                {sortSelections.map((s, i) => (
-                  <Dropdown.Item
-                    key={i}
-                    onClick={() => {
-                      setSort(s)
-                    }}
-                  >
-                    {s}
-                  </Dropdown.Item>
-                ))}
-              </Dropdown.Menu>
-            </Dropdown>
-            <Dropdown className='label-dropdown'>
-              <Dropdown.Toggle id='dropdown-label' variant='outline-info'>
-                Label
-              </Dropdown.Toggle>
-              <Dropdown.Menu className='label-dropdown-container'>
-                <Form>
-                  <InputGroup>
-                    <Form.Control
-                      type='text'
-                      placeholder='type something..'
-                      value={filterOfLabel}
-                      onChange={e => setLabelFilter(e.target.value)}
-                    ></Form.Control>
-                    <InputGroup.Append>
-                      <Button
-                        onClick={() => {
-                          setLabelFilter('')
-                        }}
-                        variant='outline-secondary'
-                      >
-                        <i className='clean-icon'></i>
-                      </Button>
-                    </InputGroup.Append>
-                  </InputGroup>
-                </Form>
-                <Dropdown.Item
-                  onSelect={() => {
-                    handleLabelSelection('')
-                  }}
-                  onClick={() => {
-                    setLabelFilter('unlabeled')
-                  }}
-                >
-                  unlabeled
-                </Dropdown.Item>
-                {filteredLabels.map(label => {
-                  return (
+        <Navbar collapseOnSelect expand='lg' bg='dark' variant='dark'>
+          <Form>
+            <Form.Check
+              checked={check}
+              onChange={e => {
+                handleCheckBox(e)
+              }}
+            ></Form.Check>
+            <button
+              type='button'
+              className='delete-all'
+              style={{ visibility: showDeleteButton }}
+              onClick={() => sendDelete()}
+            >
+              <i className='delete-all-icon'></i>
+              <span className='delete-all-text'>{'(delete all)'}</span>
+            </button>
+            <div className='search-container'>
+              <Form.Control
+                className='search'
+                placeholder='title(default):  description:  label:'
+                onChange={handleFilterIssue.bind(this)}
+                value={filterIssue}
+              ></Form.Control>
+            </div>
+          </Form>
+          <Navbar.Toggle aria-controls='responsive-navbar-nav' />
+          <Navbar.Collapse id='responsive-navbar-nav'>
+            <Nav className='mr-auto'></Nav>
+            <Nav>
+              <Dropdown className='sort-dropdown'>
+                <Dropdown.Toggle id='dropdown-sort' variant='outline-info'>
+                  Sort
+                </Dropdown.Toggle>
+                <Dropdown.Menu className='sort-dropdown-container'>
+                  {sortSelections.map((s, i) => (
                     <Dropdown.Item
-                      onSelect={() => {
-                        handleLabelSelection(label.labelName)
-                      }}
-                      href=''
-                      key={label.id}
+                      key={i}
                       onClick={() => {
-                        setLabelFilter(label.labelName)
+                        setSort(s)
                       }}
                     >
-                      <Badge style={{ backgroundColor: label.labelColor }}>
-                        {label.labelName[0].toUpperCase()}
-                      </Badge>
-                      {label.labelName}
+                      {s}
                     </Dropdown.Item>
-                  )
-                })}
-              </Dropdown.Menu>
-            </Dropdown>
-            <Button
-              href='/issues/new'
-              type='button'
-              className='add-issue-btn'
-              variant='outline-success'
-            >
-              Add Issue
-            </Button>
-          </Nav>
-        </Navbar.Collapse>
-      </Navbar>
-      <Issue
-        issueFilter={filterIssue}
-        checkStatus={check}
-        sortParams={sort}
-        isShow={askDelete}
-        deleteSelections={deleteSelected}
-      />
-    </Container>
+                  ))}
+                </Dropdown.Menu>
+              </Dropdown>
+              <Dropdown className='label-dropdown'>
+                <Dropdown.Toggle id='dropdown-label' variant='outline-info'>
+                  Label
+                </Dropdown.Toggle>
+                <Dropdown.Menu className='label-dropdown-container'>
+                  <Form>
+                    <InputGroup>
+                      <Form.Control
+                        type='text'
+                        placeholder='type something..'
+                        value={filterOfLabel}
+                        onChange={e => setLabelFilter(e.target.value)}
+                      ></Form.Control>
+                      <InputGroup.Append>
+                        <Button
+                          onClick={() => {
+                            setLabelFilter('')
+                          }}
+                          variant='outline-secondary'
+                        >
+                          <i className='clean-icon'></i>
+                        </Button>
+                      </InputGroup.Append>
+                    </InputGroup>
+                  </Form>
+                  <Dropdown.Item
+                    onSelect={() => {
+                      handleLabelSelection('')
+                    }}
+                    onClick={() => {
+                      setLabelFilter('unlabeled')
+                    }}
+                  >
+                    unlabeled
+                  </Dropdown.Item>
+                  {filteredLabels.map(label => {
+                    return (
+                      <Dropdown.Item
+                        onSelect={() => {
+                          handleLabelSelection(label.labelName)
+                        }}
+                        href=''
+                        key={label.id}
+                        onClick={() => {
+                          setLabelFilter(label.labelName)
+                        }}
+                      >
+                        <Badge style={{ backgroundColor: label.labelColor }}>
+                          {label.labelName[0].toUpperCase()}
+                        </Badge>
+                        {label.labelName}
+                      </Dropdown.Item>
+                    )
+                  })}
+                </Dropdown.Menu>
+              </Dropdown>
+              <Button
+                href='/issues/new'
+                type='button'
+                className='add-issue-btn'
+                variant='outline-success'
+              >
+                Add Issue
+              </Button>
+            </Nav>
+          </Navbar.Collapse>
+        </Navbar>
+        <Issue
+          issueFilter={filterIssue}
+          checkStatus={check}
+          sortParams={sort}
+          isShow={askDelete}
+          deleteSelections={deleteSelected}
+        />
+      </Container>
     </div>
   )
 }

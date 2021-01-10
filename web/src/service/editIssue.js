@@ -1,21 +1,24 @@
 import axios from 'axios'
+import { barer_token, base_url } from '../custom/httpCustomValues'
 
 export const editIssue = async (id, title, description) => {
-  const url = 'localhost:8080/issue/' + id
+  const url = base_url + 'issue/' + id
 
   let issue = {
     title: title,
     description: description
   }
-  console.log(url)
-  const header = {
-    Authorization:
-      'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTYxMTA2NzY5Mn0.gusU3gRCFY3hZxv0ESw0yU5qYPK-KxuLcxsygK2EjXmtzR82OZPsYFS8qm8gNYNqWZTr265bnbp4_4O2nj6deg'
+
+  const headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': '*',
+    Authorization: barer_token,
+    'Content-Type': 'application/json'
   }
 
   const response = await axios
     .put(url, issue, {
-      headers: header
+      headers: headers
     })
     .catch(e => console.log(e))
 

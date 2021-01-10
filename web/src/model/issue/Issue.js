@@ -115,7 +115,10 @@ export default function Issue (props) {
                   <h4>
                     {issue.title}
                     <div className='edit-delete'>
-                      <Button variant='info' href={'/issues/detail/'+issue.id}>
+                      <Button
+                        variant='info'
+                        href={'/issues/detail/' + issue.id}
+                      >
                         <i className='edit-icon'></i>
                       </Button>
                       <Button variant='danger'>

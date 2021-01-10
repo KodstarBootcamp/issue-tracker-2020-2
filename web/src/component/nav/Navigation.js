@@ -3,7 +3,7 @@ import { Nav, Navbar } from 'react-bootstrap'
 
 export function Navigation () {
   return (
-    <Navbar expand='lg' variant='dart' bg='dark'>
+    <Navbar expand='lg' variant='dart' bg='dark' style={{ zIndex: '100' }}>
       <Navbar.Brand variant='light' href='#'>
         Issue Tracker
       </Navbar.Brand>

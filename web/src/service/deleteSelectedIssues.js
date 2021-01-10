@@ -1,8 +1,9 @@
 import axios from 'axios'
+import { base_url } from '../custom/httpCustomValues'
 import { getIssues } from './getIssues'
 
 export const deleteSelectedIssues = async issueList => {
-  const url = 'http://localhost:8080/issues/' + issueList
+  const url = base_url + 'issues/' + issueList
 
   const header = {
     Authorization:

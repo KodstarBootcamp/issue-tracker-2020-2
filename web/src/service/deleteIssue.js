@@ -1,9 +1,15 @@
 import axios from 'axios'
+import { base_url } from '../custom/httpCustomValues'
 
 export const deleteIssue = async issueId => {
-    const url = 'http://localhost:8080/virtserver.swaggerhub.com/Kodstar/Issue_Tracker/1.0.0/issue/' + issueId
+  const url = base_url + 'issue/' + issueId
 
-    const response = await axios.delete(url)
+  const header = {
+    Authorization:
+      'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTYxMTA2NzY5Mn0.gusU3gRCFY3hZxv0ESw0yU5qYPK-KxuLcxsygK2EjXmtzR82OZPsYFS8qm8gNYNqWZTr265bnbp4_4O2nj6deg'
+  }
 
-    return response
+  const response = await axios.delete(url, { headers: header })
+
+  return response
 }

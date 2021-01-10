@@ -1,7 +1,8 @@
 import axios from 'axios'
+import { base_url } from '../custom/httpCustomValues'
 
 export const getIssues = async () => {
-  const url = 'http://localhost:8080/issues'
+  const url = base_url + 'issues'
 
   const header = {
     Authorization:

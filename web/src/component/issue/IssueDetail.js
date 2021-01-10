@@ -17,17 +17,16 @@ export default function IssueDetail (props) {
   const { id } = props.match.params
 
   useEffect(() => {
-    var _ = require('lodash')
-    if (_.isEmpty(issue)) {
-      setProps()
-    }
-  }, [id])
-
-  const setProps = () => {
     getIssue(id).then(i => {
       setIssue(i.data)
       setTitle(i.data.title)
       setDescription(i.data.description)
+    })
+  }, [id])
+
+  const getIssues = async () => {
+    getIssue(id).then(i => {
+      setIssue(i.data)
     })
   }
 
@@ -56,17 +55,19 @@ export default function IssueDetail (props) {
     setShowForm('none')
     setShowIssue('')
   }
-  const saveIssue = () => {
-    editIssue(id, title, description)
+  const saveIssue = async () => {
+    await editIssue(id, title, description)
+    getIssues()
+    hideEdit()
   }
-  const sendComment = () => {
-    addComment(comment, id)
-    setProps()
+  const sendComment = async () => {
+    await addComment(comment, id)
+    getIssues()
   }
 
-  const deleteThisComment = comment => {
-    deleteComment(id, comment.id)
-    setProps()
+  const deleteThisComment = async comment => {
+    await deleteComment(id, comment.id)
+    getIssues()
   }
 
   return (
