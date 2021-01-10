@@ -47,7 +47,7 @@ public class StateServiceImpl implements StateService {
     public StateDTO editState(Long stateId, StateDTO stateDTO) {
         State state = stateRepository.findById(stateId)
                 .orElseThrow(()->new IssueTrackerNotFoundException("State",stateId.toString()));
-        state.setName(stateDTO.getName());
+        state.setStateName(stateDTO.getName());
         return fromStateToStateDTO.convert(stateRepository.save(state));
     }
 }

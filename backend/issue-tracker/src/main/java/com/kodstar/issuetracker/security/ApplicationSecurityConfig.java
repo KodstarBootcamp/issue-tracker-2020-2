@@ -22,6 +22,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import javax.crypto.SecretKey;
 
+import java.util.Arrays;
+
 import static com.kodstar.issuetracker.security.SecurityConstants.SIGN_UP_URL;
 
 
@@ -58,10 +60,21 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
+    CorsConfiguration corsConfiguration (){
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.addExposedHeader("Authorization");
+        corsConfiguration.addAllowedOrigin("*");
+        corsConfiguration.addAllowedHeader("*");
+        corsConfiguration.setAllowedMethods(Arrays.asList("GET","DELETE","POST","PUT"));
+        return corsConfiguration;
+    }
+
+    @Bean
     CorsConfigurationSource corsConfigurationSource() {
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", new CorsConfiguration().applyPermitDefaultValues());
+        source.registerCorsConfiguration("/**", corsConfiguration());
         return source;
     }
+
 }
 

@@ -12,14 +12,14 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name="t_state")
-public class State implements Serializable {
+public class State  {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @NotBlank(message = "invalid input, State name can't be null")
     @Column(unique = true)
-    private String name;
+    private String stateName;
 
 
 }

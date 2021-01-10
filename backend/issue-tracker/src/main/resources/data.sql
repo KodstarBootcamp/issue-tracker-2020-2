@@ -124,4 +124,26 @@ VALUES (700, 2000);
 INSERT INTO t_issue_assignee (issue_id, user_id)
 VALUES (500, 4000);
 
+INSERT INTO t_state (id, state_name)
+VALUES (1500, 'In process');
+INSERT INTO t_state (id, state_name)
+VALUES (2500, 'Review');
+INSERT INTO t_state (id, state_name)
+VALUES (3500, 'Done');
+
+INSERT INTO t_issue_state (issue_id, state_id)
+VALUES (100, 1500);
+INSERT INTO t_issue_state (issue_id, state_id)
+VALUES (200, 1500);
+INSERT INTO t_issue_state (issue_id, state_id)
+VALUES (300, 1500);
+INSERT INTO t_issue_state (issue_id, state_id)
+VALUES (400, 2500);
+INSERT INTO t_issue_state (issue_id, state_id)
+VALUES (500, 2500);
+INSERT INTO t_issue_state (issue_id, state_id)
+VALUES (600, 3500);
+INSERT INTO t_issue_state (issue_id, state_id)
+VALUES (700, 3500);
+
 

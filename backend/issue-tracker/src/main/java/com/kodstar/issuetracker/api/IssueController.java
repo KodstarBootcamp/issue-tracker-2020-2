@@ -22,7 +22,7 @@ import java.util.*;
 public class IssueController {
 
     private final IssueService issueService;
-    private final static String ASCENDING="asc" ;
+    private final static String ASCENDING = "asc";
 
     @Autowired
     public IssueController(IssueService issueService) {
@@ -31,13 +31,13 @@ public class IssueController {
     }
 
 
-   @GetMapping("/issues")
-   public ResponseEntity<List<IssueDTO>> getAllIssues(@RequestParam(required = false, defaultValue = ASCENDING, value = "orderType") String orderType,
-                                                      @RequestParam(required = false, value = "byWhichSort") String byWhichSort) {
+    @GetMapping("/issues")
+    public ResponseEntity<List<IssueDTO>> getAllIssues(@RequestParam(required = false, defaultValue = ASCENDING, value = "orderType") String orderType,
+                                                       @RequestParam(required = false, value = "byWhichSort") String byWhichSort) {
 
-           return new ResponseEntity<>(issueService.getAllIssuesSort(orderType,byWhichSort), HttpStatus.OK);
+        return new ResponseEntity<>(issueService.getAllIssuesSort(orderType, byWhichSort), HttpStatus.OK);
 
-   }
+    }
 
 
     @GetMapping("/issue/{issueId}")
@@ -86,7 +86,6 @@ public class IssueController {
     }
 
 
-
     @GetMapping("issues/search/title/{keyword}")
     public ResponseEntity<List<IssueDTO>> getAllIssuesByTitleKeyword(@PathVariable String keyword) {
         return new ResponseEntity(issueService.findALlByTitleKeyword(keyword), HttpStatus.OK);
@@ -110,7 +109,7 @@ public class IssueController {
 
     @DeleteMapping("issue/{issueId}/comment/{commentId}")
     public void deleteComment(@PathVariable Long issueId, @PathVariable Long commentId) {
-        issueService.deleteComment( issueId, commentId);
+        issueService.deleteComment(issueId, commentId);
     }
 
     @PutMapping("issue/{issueId}/state/{stateId}")
@@ -119,7 +118,7 @@ public class IssueController {
     }
 
     @GetMapping("issues/user/issues")
-    public ResponseEntity<List<IssueDTO>> getAllIssuesByCurrentUser( Principal principal) {
+    public ResponseEntity<List<IssueDTO>> getAllIssuesByCurrentUser(Principal principal) {
         return new ResponseEntity(issueService.findALlIssuesByCurrentUser(principal), HttpStatus.OK);
     }
 

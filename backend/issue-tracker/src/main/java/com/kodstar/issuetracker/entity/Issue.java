@@ -46,7 +46,7 @@ public class Issue implements Serializable, Persistable<Long> {
     @Enumerated(EnumType.STRING)
     private IssueStatus issueStatus = IssueStatus.ACTIVE;//default
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany()
     @JoinTable(name = "t_issue_label", joinColumns = @JoinColumn(name = "issue_id"), inverseJoinColumns = @JoinColumn(name = "label_id"))
     private Set<Label> labels = new HashSet<>();
 
@@ -71,13 +71,12 @@ public class Issue implements Serializable, Persistable<Long> {
     @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime updateTime;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany()
     @JoinTable(name = "t_issue_assignee", joinColumns = @JoinColumn(name = "issue_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Set<User> assignees = new HashSet<>();
 
     @Override
     public boolean isNew() {
-
         for (Label label:labels) {
             return null == getId() && label.getId() == null;
         }
