@@ -1,15 +1,11 @@
 import axios from 'axios'
+import { barer_token } from '../custom/httpCustomValues'
 
 export const getSortedIssues = async sortKeyword => {
   const url = 'issues'
   //orderType: "desc" for descending or "asc" for ascending
   //byWhichSort: "update" for update time or "createDate" for create time
   let params_string = ''
-
-  const header = {
-    Authorization:
-      'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTYxMTA2NzY5Mn0.gusU3gRCFY3hZxv0ESw0yU5qYPK-KxuLcxsygK2EjXmtzR82OZPsYFS8qm8gNYNqWZTr265bnbp4_4O2nj6deg'
-  }
 
   switch (sortKeyword) {
     case 'Newest':
@@ -31,7 +27,9 @@ export const getSortedIssues = async sortKeyword => {
       break
   }
 
-  let response = await axios.get(url + params_string, { headers: header })
+  let response = await axios.get(url + params_string, {
+    headers: { Authorization: barer_token }
+  })
 
   return response
 }

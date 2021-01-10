@@ -13,14 +13,15 @@ export const getFilteredIssues = async searchFilter => {
     .slice(0, searchFilter.indexOf(':'))
     .replace(/\s/gi, '')
 
-  let response
+  let res
 
   if (searchFilter === '' || filterKeyword === '') {
-    response = getIssues()
+    res = getIssues()
   } else {
-    response = await axios.get(search_url + keyword + '/' + filterKeyword, {
+    let full_url = search_url + keyword + '/' + filterKeyword
+    res = await axios.get(full_url, {
       headers: { Authorization: barer_token }
     })
   }
-  return response
+  return res
 }
