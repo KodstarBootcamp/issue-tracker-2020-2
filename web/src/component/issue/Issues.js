@@ -93,7 +93,7 @@ export default function Issues () {
             <div className='search-container'>
               <Form.Control
                 className='search'
-                placeholder='title(default):  description:  label:'
+                placeholder='title:  description:  label:'
                 onChange={handleFilterIssue.bind(this)}
                 value={filterIssue}
               ></Form.Control>

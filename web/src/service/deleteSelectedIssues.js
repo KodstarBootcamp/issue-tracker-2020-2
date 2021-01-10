@@ -1,9 +1,8 @@
 import axios from 'axios'
-import { base_url } from '../custom/httpCustomValues'
 import { getIssues } from './getIssues'
 
 export const deleteSelectedIssues = async issueList => {
-  const url = base_url + 'issues/' + issueList
+  const url = 'issues/' + issueList
 
   const header = {
     Authorization:

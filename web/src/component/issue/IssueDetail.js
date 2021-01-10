@@ -24,7 +24,7 @@ export default function IssueDetail (props) {
     })
   }, [id])
 
-  const getIssues = async () => {
+  const getIssues = () => {
     getIssue(id).then(i => {
       setIssue(i.data)
     })

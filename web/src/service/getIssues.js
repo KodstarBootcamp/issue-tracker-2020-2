@@ -1,8 +1,7 @@
 import axios from 'axios'
-import { base_url } from '../custom/httpCustomValues'
 
 export const getIssues = async () => {
-  const url = base_url + 'issues'
+  const url = 'issues'
 
   const header = {
     Authorization:

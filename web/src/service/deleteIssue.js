@@ -1,8 +1,7 @@
 import axios from 'axios'
-import { base_url } from '../custom/httpCustomValues'
 
 export const deleteIssue = async issueId => {
-  const url = base_url + 'issue/' + issueId
+  const url = 'issue/' + issueId
 
   const header = {
     Authorization:

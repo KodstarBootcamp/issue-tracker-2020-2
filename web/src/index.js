@@ -1,28 +1,18 @@
-import React, { Suspense, lazy } from 'react'
+import React from 'react'
 import ReactDOM from 'react-dom'
 import './index.scss'
 import reportWebVitals from './reportWebVitals'
 import 'bootstrap/dist/css/bootstrap.min.css'
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import { Navigation } from './component/nav/Navigation'
+import axios from 'axios'
+import App from './App'
 
-const Issues = lazy(() => import('./component/issue/Issues'))
-const CreateIssue = lazy(() => import('./component/issue/CreateIssue'))
-const IssueDetail = lazy(() => import('./component/issue/IssueDetail'))
+axios.defaults.baseURL = 'http://localhost:8080/'
 
 ReactDOM.render(
   <React.StrictMode>
     <Navigation />
-    <Router>
-      <Suspense fallback={<div> Loading... </div>}>
-        {' '}
-        <Switch>
-          <Route path='/issues' exact component={Issues} />{' '}
-          <Route path='/issues/new' exact component={CreateIssue} />{' '}
-          <Route path='/issues/detail/:id' exact component={IssueDetail} />{' '}
-        </Switch>{' '}
-      </Suspense>{' '}
-    </Router>{' '}
+    <App />
   </React.StrictMode>,
   document.getElementById('root')
 )

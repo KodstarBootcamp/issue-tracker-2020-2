@@ -1,8 +1,7 @@
 import axios from 'axios'
-import { base_url } from '../custom/httpCustomValues'
 
 export const getSortedIssues = async sortKeyword => {
-  const url = base_url + 'issues'
+  const url = 'issues'
   //orderType: "desc" for descending or "asc" for ascending
   //byWhichSort: "update" for update time or "createDate" for create time
   let params_string = ''

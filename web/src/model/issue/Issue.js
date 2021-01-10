@@ -23,6 +23,7 @@ export default function Issue (props) {
 
   useEffect(() => {
     getFilteredIssues(issueFilter).then(issue => {
+      console.log(issue.data)
       setIssues(issue.data)
     })
   }, [issueFilter])
