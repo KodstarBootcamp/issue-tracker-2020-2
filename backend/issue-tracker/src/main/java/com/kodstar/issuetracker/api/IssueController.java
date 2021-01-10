@@ -29,7 +29,7 @@ import java.util.*;
 public class IssueController {
 
     private final IssueService issueService;
-    private final static String ASCENDING="asc" ;
+    private final static String ASCENDING = "asc";
 
     @Autowired
     public IssueController(IssueService issueService) {
@@ -45,6 +45,7 @@ public class IssueController {
                                                            @RequestParam(required = false, defaultValue = "10") int size) {
         System.out.println(page);
         return new ResponseEntity<>(issueService.getAllIssuesSort(orderType, byWhichSort, PageRequest.of(page, size)), HttpStatus.OK);
+
 
     }
 
@@ -95,7 +96,6 @@ public class IssueController {
     }
 
 
-
     @GetMapping("issues/search/title/{keyword}")
     public ResponseEntity<List<IssueDTO>> getAllIssuesByTitleKeyword(@PathVariable String keyword) {
         return new ResponseEntity(issueService.findALlByTitleKeyword(keyword), HttpStatus.OK);
@@ -106,9 +106,9 @@ public class IssueController {
         return new ResponseEntity(issueService.findALlByDescKeyword(keyword), HttpStatus.OK);
     }
 
-    @GetMapping("issues/search/label/{keyword}")
-    public ResponseEntity<List<IssueDTO>> getAllIssuesByLabelKeyword(@PathVariable String keyword) {
-        return new ResponseEntity(issueService.findALlIssuesByLabel(keyword), HttpStatus.OK);
+    @GetMapping("issues/search/label/{labelId}")
+    public ResponseEntity<List<IssueDTO>> getAllIssuesByLabel(@PathVariable Long labelId) {
+        return new ResponseEntity(issueService.findAllByLabelsContains(labelId), HttpStatus.OK);
     }
 
     @PostMapping("issue/{issueId}/comment")
@@ -128,7 +128,7 @@ public class IssueController {
     }
 
     @GetMapping("issues/user/issues")
-    public ResponseEntity<List<IssueDTO>> getAllIssuesByCurrentUser( Principal principal) {
+    public ResponseEntity<List<IssueDTO>> getAllIssuesByCurrentUser(Principal principal) {
         return new ResponseEntity(issueService.findALlIssuesByCurrentUser(principal), HttpStatus.OK);
     }
 
