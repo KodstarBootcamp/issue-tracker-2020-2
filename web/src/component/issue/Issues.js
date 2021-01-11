@@ -15,7 +15,6 @@ import { getLabels } from '../../service/getLabels'
 import './scss/issues.scss'
 
 export default function Issues () {
-  // var _ = require('lodash')
   let [labels, setItem] = useState([])
   let [filteredLabels, setFilteredLabels] = useState([])
   let [filterOfLabel, setLabelFilter] = useState('')

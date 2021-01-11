@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { barer_token } from '../custom/httpCustomValues'
 
 export const addComment = async (commentText, issueId) => {
   const url = 'issue/' + issueId + '/comment'

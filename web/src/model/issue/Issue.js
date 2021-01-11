@@ -4,6 +4,9 @@ import { getFilteredIssues } from '../../service/getFilteredIssues'
 import { getSortedIssues } from '../../service/getSortedIssues'
 import { deleteSelectedIssues } from '../../service/deleteSelectedIssues'
 import './scss/issue.scss'
+import { getLabels } from '../../service/getLabels'
+import { getIssues } from '../../service/getIssues'
+import { deleteIssue } from '../../service/deleteIssue'
 
 export default function Issue (props) {
   let [issues, setIssues] = useState([])
@@ -22,13 +25,37 @@ export default function Issue (props) {
   }
 
   useEffect(() => {
-    getFilteredIssues(issueFilter).then(issue => {
-      if (issue.data.content === undefined) {
-        setIssues(issue.data)
-      }else {
-        setIssues(issue.data.content)
-      }
-    })
+    let keyword = issueFilter
+      .slice(0, issueFilter.indexOf(':'))
+      .replace(/\s/gi, '')
+
+    let filterKeyword = issueFilter
+      .slice(issueFilter.indexOf(':') + 1)
+      .replace(/\s/gi, '')
+
+    if (keyword === 'label' && filterKeyword !== '') {
+      getLabels().then(l => {
+        l.data.map(label => {
+          if (label.labelName === filterKeyword) {
+            getFilteredIssues(keyword + ':' + label.id).then(issue => {
+              if (issue.data.content === undefined) {
+                setIssues(issue.data)
+              } else {
+                setIssues(issue.data.content)
+              }
+            })
+          }
+        })
+      })
+    } else {
+      getFilteredIssues(issueFilter).then(issue => {
+        if (issue.data.content === undefined) {
+          setIssues(issue.data)
+        } else {
+          setIssues(issue.data.content)
+        }
+      })
+    }
   }, [issueFilter])
 
   useEffect(() => {
@@ -67,7 +94,7 @@ export default function Issue (props) {
       let selected = []
       checkedIssues.map(c => (c.status === true ? selected.push(c.id) : null))
       deleteSelectedIssues(selected).then(i => {
-        setIssues(i.data)
+        setIssues(i.data.content)
       })
 
       isShow('hidden', true)
@@ -97,6 +124,10 @@ export default function Issue (props) {
     setCheck(tempArray)
   }
 
+  async function deleteIssueOne (id) {
+    await deleteIssue(id)
+    getIssues().then(i => setIssues(i.data.content))
+  }
   return (
     <Table striped bordered hover variant='dark'>
       <tbody className='container'>
@@ -126,7 +157,10 @@ export default function Issue (props) {
                         >
                           <i className='edit-icon'></i>
                         </Button>
-                        <Button variant='danger'>
+                        <Button
+                          variant='danger'
+                          onClick={() => deleteIssueOne(issue.id)}
+                        >
                           <i className='delete-icon'></i>
                         </Button>
                       </div>

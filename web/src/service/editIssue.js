@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { barer_token } from '../custom/httpCustomValues'
 
 export const editIssue = async (id, title, description) => {
   const url = 'issue/' + id

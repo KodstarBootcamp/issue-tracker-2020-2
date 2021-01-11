@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { barer_token } from '../custom/httpCustomValues'
 
 export const deleteComment = async (issueId, commentId) => {
   const url = 'issue/' + issueId + '/comment/' + commentId

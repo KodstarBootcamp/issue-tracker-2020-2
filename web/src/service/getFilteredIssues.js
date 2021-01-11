@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { barer_token } from '../custom/httpCustomValues'
+
 import { getIssues } from './getIssues'
 
 export const getFilteredIssues = async searchFilter => {
@@ -12,9 +12,8 @@ export const getFilteredIssues = async searchFilter => {
   let keyword = searchFilter
     .slice(0, searchFilter.indexOf(':'))
     .replace(/\s/gi, '')
-
+  
   let res
-
   if (searchFilter === '' || filterKeyword === '') {
     res = getIssues()
   } else {
