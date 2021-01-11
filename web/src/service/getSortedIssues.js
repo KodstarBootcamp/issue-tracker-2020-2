@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { barer_token } from '../custom/httpCustomValues'
 
 export const getSortedIssues = async sortKeyword => {
   const url = 'issues'
@@ -28,7 +27,7 @@ export const getSortedIssues = async sortKeyword => {
   }
 
   let response = await axios.get(url + params_string, {
-    headers: { Authorization: barer_token }
+    headers: { Authorization: localStorage.getItem('token') }
   })
 
   return response

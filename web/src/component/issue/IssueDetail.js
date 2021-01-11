@@ -4,6 +4,7 @@ import { getIssue } from '../../service/getIssue'
 import { addComment } from '../../service/addComment'
 import { editIssue } from '../../service/editIssue'
 import { deleteComment } from '../../service/deleteComment'
+import { deleteIssue } from '../../service/deleteIssue'
 import './scss/issue-detail.scss'
 
 export default function IssueDetail (props) {
@@ -70,6 +71,10 @@ export default function IssueDetail (props) {
     getIssues()
   }
 
+  const deleteThisIssue = async () => {
+    await deleteIssue(id)
+    props.history.push('/issues')
+  }
   return (
     <Container className='issue-detail-container'>
       <Row>
@@ -86,7 +91,11 @@ export default function IssueDetail (props) {
                   >
                     <i className='edit-comment-icon'></i>
                   </Button>
-                  <Button variant='outline-danger' className='delete-comment'>
+                  <Button
+                    variant='outline-danger'
+                    className='delete-comment'
+                    onClick={() => deleteThisIssue()}
+                  >
                     <i className='delete-comment-icon'></i>
                   </Button>
                 </span>

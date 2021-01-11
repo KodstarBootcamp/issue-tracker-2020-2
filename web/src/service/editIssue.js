@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { barer_token } from '../custom/httpCustomValues'
 
 export const editIssue = async (id, title, description) => {
   const url = 'issue/' + id
@@ -12,7 +11,7 @@ export const editIssue = async (id, title, description) => {
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': '*',
-    Authorization: barer_token,
+    Authorization: localStorage.getItem('token'),
     'Content-Type': 'application/json'
   }
 
