@@ -6,7 +6,7 @@ export const deleteComment = async (issueId, commentId) => {
 
   console.log(url)
   const response = await axios.delete(url, {
-    headers: { Authorization: barer_token }
+    headers: { Authorization: localStorage.getItem('token') }
   })
 
   return response

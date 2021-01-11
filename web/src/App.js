@@ -1,11 +1,6 @@
 import React, { lazy, Suspense } from 'react'
-import {
-  BrowserRouter as Router,
-  Redirect,
-  Route,
-  Switch
-} from 'react-router-dom'
-
+import { Router, Redirect, Route, Switch } from 'react-router-dom'
+import history from './service/history'
 import './app.scss'
 
 function App () {
@@ -13,47 +8,65 @@ function App () {
   const Issues = lazy(() => import('./component/issue/Issues'))
   const CreateIssue = lazy(() => import('./component/issue/CreateIssue'))
   const IssueDetail = lazy(() => import('./component/issue/IssueDetail'))
-  //const Login = lazy(() => import('./component/login/Login'))
+  const Login = lazy(() => import('./component/login/Login'))
 
   const getRoutes = () => {
-    let token = localStorage.getItem('item')
+    let token = localStorage.getItem('token')
 
-    const routes = []
+    const routesAfterLogin = [
+      <Route key={1} path='/' exact component={Home} />,
+      <Route key={2} path='/issues' exact component={Issues} />,
+      <Route key={3} path='/issues/new' exact component={CreateIssue} />,
+      <Route key={4} path='/issues/detail/:id' exact component={IssueDetail} />,
+      <Route
+        key={0}
+        path='/login'
+        exact
+        component={() => <Redirect to='/' />}
+      />
+    ]
 
-    // const login = [
-    //   <Route path='/login' component={Login}></Route>,
-    //   <Route path='/' exact component={Home}>
-    //     <Redirect to='/login'></Redirect>
-    //   </Route>,
-    //   <Route path='/issues' exact component={Home}>
-    //     <Redirect to='/login'></Redirect>
-    //   </Route>,
-    //   <Route path='/issues/new' exact component={Home}>
-    //     <Redirect to='/login'></Redirect>
-    //   </Route>,
-    //   <Route path='/issues/detail/:id' exact component={Home}>
-    //     <Redirect to='/login'></Redirect>
-    //   </Route>
-    // ]
+    const routesBeforeLogin = [
+      <Route key={5} path='/login' component={Login} />,
+      <Route
+        key={6}
+        path='/'
+        exact
+        component={() => <Redirect to='login' />}
+      />,
+      <Route
+        key={7}
+        path='/issues'
+        exact
+        component={() => <Redirect to='login' />}
+      />,
+      <Route
+        key={8}
+        path='/issues/new'
+        exact
+        component={() => <Redirect to='login' />}
+      />,
+      <Route
+        key={9}
+        path='/issues/detail/:id'
+        exact
+        component={() => <Redirect to='login' />}
+      />
+    ]
 
-    // if (token === '' || token === null) {
-    //   return login
-    // } else {
-    //   return routes
-    // }
-    return routes
+    if (token === '' || token === null) {
+      return routesBeforeLogin
+    } else {
+      return routesAfterLogin
+    }
   }
 
   return (
-    <Router>
+    <Router history={history}>
       <Suspense fallback={<div> Loading... </div>}>
-        <Switch>
-          <Route path='/' exact component={Home} />,
-          <Route path='/issues' exact component={Issues} />,
-          <Route path='/issues/new' exact component={CreateIssue} />,
-          <Route path='/issues/detail/:id' exact component={IssueDetail} />
-        </Switch>
-      </Suspense>
+        {' '}
+        <Switch> {getRoutes().map(r => r)} </Switch>{' '}
+      </Suspense>{' '}
     </Router>
   )
 }

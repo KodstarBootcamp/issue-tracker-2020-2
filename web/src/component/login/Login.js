@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import { Form, Row, Button } from 'react-bootstrap'
 import axios from 'axios'
-
+import history from '../../service/history'
 import './scss/login.scss'
 
-export default function Login () {
+export default function Login (props) {
   let [userName, setUserName] = useState('')
   let [password, setPassword] = useState('')
 
@@ -14,24 +14,36 @@ export default function Login () {
   const handlePassword = e => {
     setPassword(e.target.value)
   }
+
+  const headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': '*',
+    'Content-Type': 'application/json'
+  }
+
   const login = async () => {
     await axios
-      .post('/login', {
-        username: userName,
-        password: password
-      })
-      .then(
-        r => (
-          localStorage.setItem('token', r.headers.authorization),
+      .post(
+        '/login',
+        {
+          username: userName,
+          password: password
+        },
+        { headers: headers }
+      )
+      .then(r => {
+        localStorage.setItem('token', r.headers.authorization)
+        if (r.status === 200) {
           window.location.reload()
-        )
-      ).catch(e=> alert("Check your credentials!"))
+        }
+      })
+      .catch(e => alert('check your credentials!'))
   }
   return (
     <div className='container-fluid'>
       <Row>
         <div className='offset-4 col-4 offset-4 form-container'>
-          <Form>
+          <Form onSubmit={() => login()}>
             <Form.Group controlId='formBasicUserName'>
               <Form.Control
                 type='text'

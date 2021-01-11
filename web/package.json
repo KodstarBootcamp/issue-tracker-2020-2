@@ -2,7 +2,7 @@
     "name": "issue-tracker-react",
     "version": "0.1.0",
     "private": true,
-    "proxy": "http://localhost:8080",
+    "proxy": "http://issuetracker2020-env.eba-2q9injz6.us-east-2.elasticbeanstalk.com:5000/",
     "dependencies": {
         "@testing-library/jest-dom": "^5.11.6",
         "@testing-library/react": "^11.2.2",

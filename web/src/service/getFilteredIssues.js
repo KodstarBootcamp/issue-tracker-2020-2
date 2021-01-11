@@ -20,7 +20,7 @@ export const getFilteredIssues = async searchFilter => {
   } else {
     let full_url = search_url + keyword + '/' + filterKeyword
     res = await axios.get(full_url, {
-      headers: { Authorization: barer_token }
+      headers: { Authorization: localStorage.getItem('token') }
     })
   }
   return res

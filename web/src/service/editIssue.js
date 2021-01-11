@@ -12,7 +12,7 @@ export const editIssue = async (id, title, description) => {
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': '*',
-    Authorization: barer_token,
+    Authorization: localStorage.getItem('token'),
     'Content-Type': 'application/json'
   }
 

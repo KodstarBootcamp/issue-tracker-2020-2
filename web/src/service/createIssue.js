@@ -9,10 +9,9 @@ export const createIssue = async (title, description, labels) => {
     description: description,
     labels: labels
   }
-  
 
   const response = await axios.post(url, issue, {
-    headers: { Authorization: barer_token }
+    headers: { Authorization: localStorage.getItem('token') }
   })
   return response
 }

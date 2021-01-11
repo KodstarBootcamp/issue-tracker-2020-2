@@ -7,7 +7,10 @@ import { Navigation } from './component/nav/Navigation'
 import axios from 'axios'
 import App from './App'
 
-axios.defaults.baseURL = "http://localhost:8080/"
+// axios.defaults.baseURL =
+//   'IssueTracker2020-env.eba-2q9injz6.us-east-2.elasticbeanstalk.com/'
+
+axios.defaults.baseURL = 'http://issuetracker2020-env.eba-2q9injz6.us-east-2.elasticbeanstalk.com/'
 
 ReactDOM.render(
   <React.StrictMode>
