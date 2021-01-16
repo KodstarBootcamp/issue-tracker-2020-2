@@ -6,12 +6,16 @@ import com.kodstar.issuetracker.dto.UserDTO;
 import com.kodstar.issuetracker.entity.VerificationToken;
 import com.kodstar.issuetracker.eventlistener.OnRegistrationCompleteEvent;
 import com.kodstar.issuetracker.service.UserService;
+import com.kodstar.issuetracker.utils.impl.FromUserToUserDTO;
 import org.modelmapper.internal.Errors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
@@ -33,33 +37,35 @@ public class RegsitrationController {
     private ApplicationEventPublisher eventPublisher;
 
     @Autowired
+    private FromUserToUserDTO fromUserToUserDTO;
+
+    @Autowired
     private MessageSource messages;
 
-    @PostMapping("/user/registration")
-    public ModelAndView registerUserAccount(
-            @ModelAttribute("user") @Valid UserDTO userDto,
+    @PostMapping("register")
+    public ResponseEntity registerUserAccount(@Valid @NonNull @RequestBody UserDTO userDto,
             HttpServletRequest request, Errors errors) {
+        User userSaved =null;
+        UserDTO savedUserDTO=null;
 
         try {
-            User registered = userService.registerNewUserAccount(userDto);
+            userSaved = userService.registerNewUserAccount(userDto);
 
             String appUrl = request.getContextPath();
-            eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registered,
+            eventPublisher.publishEvent(new OnRegistrationCompleteEvent(userSaved,
                     request.getLocale(), appUrl));
         } catch (IllegalArgumentException uaeEx) {
-            ModelAndView mav = new ModelAndView("registration", "user", userDto);
-            mav.addObject("message", "An account for that username/email already exists.");
-            return mav;
-        } catch (RuntimeException ex) {
-            return new ModelAndView("emailError", "user", userDto);
-        }
 
-        return new ModelAndView("successRegister", "user", userDto);
+        } catch (RuntimeException ex) {
+
+        }
+        userDto= fromUserToUserDTO.convert(userSaved)      ;
+
+        return new ResponseEntity(userDto, HttpStatus.OK);
     }
 
-    @GetMapping("/regitrationConfirm")
-    public String confirmRegistration
-            (WebRequest request, Model model, @RequestParam("token") String token) {
+    @GetMapping("/confirm")
+    public String confirmRegistration(WebRequest request, Model model, @RequestParam("token") String token) {
 
         Locale locale = request.getLocale();
 

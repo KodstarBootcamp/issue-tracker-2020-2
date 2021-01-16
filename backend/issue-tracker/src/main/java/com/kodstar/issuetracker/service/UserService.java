@@ -15,9 +15,10 @@ public interface UserService {
     Set<UserDTO> getAllUsers();
 
     UserDTO getUserById(Long userId);
-    User registerNewUserAccount(UserDTO userDto);
 
-    User getUser(String verificationToken);
+    User registerNewUserAccount(UserDTO userDTO);
+
+    UserDTO getUser(String verificationToken);
 
     void saveRegisteredUser(User user);
 

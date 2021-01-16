@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
 import java.util.Collection;
 
 
@@ -19,7 +20,7 @@ import java.util.Collection;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "t_users")
-public class User  {
+public class User implements UserDetails, Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -34,8 +35,9 @@ public class User  {
 
     private String email;
 
-    @Column(name = "verification_code", length = 64)
-    private String verificationCode;
+
+    @Column(name = "verification", length = 64)
+    private String verification;
 
     @Column(name = "enabled")
     private boolean enabled;

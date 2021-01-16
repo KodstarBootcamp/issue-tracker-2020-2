@@ -2,6 +2,7 @@ package com.kodstar.issuetracker.eventlistener;
 
 
 import com.kodstar.issuetracker.auth.User;
+import com.kodstar.issuetracker.dto.UserDTO;
 import com.kodstar.issuetracker.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
@@ -33,13 +34,14 @@ public class RegistrationListener implements
 
     private void confirmRegistration(OnRegistrationCompleteEvent event) {
         User user = event.getUser();
+
         String token = UUID.randomUUID().toString();
         service.createVerificationToken(user, token);
 
         String recipientAddress = user.getEmail();
         String subject = "Registration Confirmation";
         String confirmationUrl
-                = event.getAppUrl() + "/regitrationConfirm.html?token=" + token;
+                = event.getAppUrl() + "/registrationConfirm.html?token=" + token;
         String message = messages.getMessage("message.regSuccess", null, event.getLocale());
 
         SimpleMailMessage email = new SimpleMailMessage();

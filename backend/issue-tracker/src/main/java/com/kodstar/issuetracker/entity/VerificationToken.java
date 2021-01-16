@@ -14,7 +14,7 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class VerificationToken {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @Column(nullable = false, unique = true)
@@ -39,9 +39,9 @@ public class VerificationToken {
         return new Date(cal.getTime().getTime());
     }
 
-  /*  public boolean isExpired() {
+    public boolean isExpired() {
         return new Date().after(this.expiryDate);
-    }*/
+    }
 }
 
 

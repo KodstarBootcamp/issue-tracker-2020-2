@@ -1,6 +1,7 @@
 package com.kodstar.issuetracker.eventlistener;
 
 import com.kodstar.issuetracker.auth.User;
+import com.kodstar.issuetracker.dto.UserDTO;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -47,7 +48,7 @@ public class OnRegistrationCompleteEvent extends ApplicationEvent {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(UserDTO userDTO) {
         this.user = user;
     }
 }
