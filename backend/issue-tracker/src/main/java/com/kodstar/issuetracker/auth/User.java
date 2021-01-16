@@ -18,7 +18,7 @@ import java.util.Collection;
 @Entity
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
+//@NoArgsConstructor
 @Table(name = "t_users")
 public class User implements UserDetails, Serializable {
     @Id
@@ -41,6 +41,10 @@ public class User implements UserDetails, Serializable {
 
     @Column(name = "enabled")
     private boolean enabled;
+
+    public User() {
+        this.enabled=false;
+    }
 
 
 

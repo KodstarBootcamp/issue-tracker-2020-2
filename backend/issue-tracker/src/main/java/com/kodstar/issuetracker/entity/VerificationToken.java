@@ -13,6 +13,8 @@ import java.util.Date;
 @Data
 @RequiredArgsConstructor
 public class VerificationToken {
+    private static final int EXPIRATION = 60 * 24;
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;

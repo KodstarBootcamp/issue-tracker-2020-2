@@ -5,6 +5,7 @@ import com.kodstar.issuetracker.auth.User;
 import com.kodstar.issuetracker.dto.UserDTO;
 import com.kodstar.issuetracker.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.MessageSource;
 import org.springframework.mail.SimpleMailMessage;
@@ -14,13 +15,13 @@ import org.springframework.stereotype.Component;
 import java.util.UUID;
 
 @Component
-public class RegistrationListener implements
-        ApplicationListener<OnRegistrationCompleteEvent> {
+public class RegistrationListener implements ApplicationListener<OnRegistrationCompleteEvent> {
 
 
     @Autowired
     private UserService service;
 
+    @Qualifier("abc")
     @Autowired
     private MessageSource messages;
 
@@ -41,7 +42,7 @@ public class RegistrationListener implements
         String recipientAddress = user.getEmail();
         String subject = "Registration Confirmation";
         String confirmationUrl
-                = event.getAppUrl() + "/registrationConfirm.html?token=" + token;
+                = event.getAppUrl() + "/confirm?token=" + token;
         String message = messages.getMessage("message.regSuccess", null, event.getLocale());
 
         SimpleMailMessage email = new SimpleMailMessage();
