@@ -3,6 +3,7 @@ package com.kodstar.issuetracker.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
+import javax.persistence.Column;
 import javax.validation.constraints.NotBlank;
 
 @AllArgsConstructor
@@ -17,4 +18,11 @@ public class UserDTO {
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
+
+    private String email;
+
+    private String verificationCode;
+
+    private boolean enabled;
+
 }

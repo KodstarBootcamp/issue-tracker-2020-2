@@ -45,4 +45,5 @@ public class UserController {
         return new ResponseEntity(userService.getUserById(userId), HttpStatus.OK);
     }
 
+
 }
