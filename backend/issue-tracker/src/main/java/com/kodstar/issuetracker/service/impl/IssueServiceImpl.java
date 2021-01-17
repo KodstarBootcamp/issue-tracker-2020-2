@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Principal;
+import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -63,16 +64,16 @@ public class IssueServiceImpl implements IssueService {
         this.commentService = commentService;
         this.fromCommentDTOtoComment = fromCommentDTOtoComment;
         this.stateRepository = stateRepository;
-        this.issueHistoryRepository=issueHistoryRepository;
+        this.issueHistoryRepository = issueHistoryRepository;
     }
 
     @Override
     @Transactional
     public IssueDTO createIssue(IssueDTO idt) {
         Issue issue = fromIssueDTOToIssue.convert(idt);
-        issue=issueRepository.save(issue);
+        issue = issueRepository.save(issue);
         IssueDTO issueDto = fromIssueToIssueDTO.convert(issue);
-        IssueHistory issueHistory=new IssueHistory();
+        IssueHistory issueHistory = new IssueHistory();
         issueHistory.setIssue(issue);
         issueHistory.setHistoryType(HistoryType.ISSUE_CREATED);
         issueHistoryRepository.save(issueHistory);
@@ -217,6 +218,7 @@ public class IssueServiceImpl implements IssueService {
             throw new InvalidQueryParameterException(SORT_TYPE_ERROR_MESSAGE);
         }
     }
+
     @Override
     public IssueDTO removeLabelFromIssue(Long labelId, Long issueId) {
 
@@ -231,16 +233,25 @@ public class IssueServiceImpl implements IssueService {
     }
 
 
-
     @Override
-    public IssueDTO addLabel(Long labelId,Long issueId) {
+    @Transactional
+    public IssueDTO addLabel(Long labelId, Long issueId) {
         Issue issue = issueRepository.findById(issueId)
                 .orElseThrow(NoSuchElementException::new);
 
-       Label label = labelRepository.findById(labelId)
+        Label label = labelRepository.findById(labelId)
                 .orElseThrow(NoSuchElementException::new);
-
         issue.getLabels().add(label);
+        System.out.println(issue.getLabels());
+
+        IssueHistory issueHistory = new IssueHistory();
+        issueHistory.setIssue(issue);
+        issueHistory.setHistoryType(HistoryType.LABEL_ADDED);
+        HashSet<Label> labels = new HashSet<>();
+        labels.add(label);
+        issueHistory.setLabels(labels);
+        issueHistoryRepository.save(issueHistory);
+
         return fromIssueToIssueDTO.convert(issueRepository.save(issue));
     }
 
@@ -253,7 +264,7 @@ public class IssueServiceImpl implements IssueService {
         modelMapper.getConfiguration().setSkipNullEnabled(true);
         modelMapper.map(issue, updatedIssue);
         IssueDTO issueDTO = fromIssueToIssueDTO.convert(issueRepository.save(updatedIssue));
-        IssueHistory issueHistory=new IssueHistory();
+        IssueHistory issueHistory = new IssueHistory();
         issueHistory.setIssue(updatedIssue);
         issueHistory.setHistoryType(HistoryType.ISSUE_MODIFIED);
         issueHistoryRepository.save(issueHistory);
@@ -266,7 +277,7 @@ public class IssueServiceImpl implements IssueService {
     public void deleteIssue(Long issueId) {
         Issue issue = issueRepository.findById(issueId)
                 .orElseThrow(NoSuchElementException::new);
-        IssueHistory issueHistory=new IssueHistory();
+        IssueHistory issueHistory = new IssueHistory();
         issueHistory.setIssue(issue);
         issueHistory.setHistoryType(HistoryType.ISSUE_DELETED);
         issueHistoryRepository.save(issueHistory);
