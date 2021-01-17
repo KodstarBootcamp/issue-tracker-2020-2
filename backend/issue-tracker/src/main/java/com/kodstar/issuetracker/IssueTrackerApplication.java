@@ -1,10 +1,12 @@
 package com.kodstar.issuetracker;
 
+import com.kodstar.issuetracker.auth.AuditorAwareImpl;
 import io.jsonwebtoken.security.Keys;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -33,6 +35,10 @@ public class IssueTrackerApplication {
     @Bean
     public SecretKey secretKey(){
         return Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
+    }
+    @Bean
+    AuditorAware<String> auditorProvider() {
+        return new AuditorAwareImpl();
     }
 
 
