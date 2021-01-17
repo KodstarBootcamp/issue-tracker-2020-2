@@ -120,6 +120,12 @@ public class IssueServiceImpl implements IssueService {
                 .orElseThrow(NoSuchElementException::new);
         Comment addedComment = commentService.createComment(fromCommentDTOtoComment.convert(commentDTO));
         issue.getComments().add(addedComment);
+
+        IssueHistory issueHistory = new IssueHistory();
+        issueHistory.setIssue(issue);
+        issueHistory.setHistoryType(HistoryType.COMMENT_ADDED);
+        issueHistory.setComment(addedComment);
+        issueHistoryRepository.save(issueHistory);
         return fromIssueToIssueDTO.convert(issueRepository.save(issue));
     }
 
@@ -132,6 +138,11 @@ public class IssueServiceImpl implements IssueService {
                 .findFirst();
         if (comment.isPresent()) {
             issue.getComments().remove(comment.get());
+            IssueHistory issueHistory = new IssueHistory();
+            issueHistory.setIssue(issue);
+            issueHistory.setHistoryType(HistoryType.COMMENT_DELETED);
+            issueHistory.setComment(comment.get());
+            issueHistoryRepository.save(issueHistory);
         } else {
             throw new IssueTrackerNotFoundException("Comment", commentId.toString());
         }
@@ -214,6 +225,7 @@ public class IssueServiceImpl implements IssueService {
     }
 
     @Override
+    @Transactional
     public IssueDTO removeLabelFromIssue(Long labelId, Long issueId) {
 
         Issue issue = issueRepository.findById(issueId)
@@ -296,6 +308,7 @@ public class IssueServiceImpl implements IssueService {
     }
 
     @Override
+    @Transactional
     public IssueDTO addAssignee(Long userId, Long issueId) {
         Issue issue = issueRepository.findById(issueId)
                 .orElseThrow(NoSuchElementException::new);
@@ -316,6 +329,7 @@ public class IssueServiceImpl implements IssueService {
     }
 
     @Override
+    @Transactional
     public IssueDTO removeAssigneeFromIssue(Long userId, Long issueId) {
 
         Issue issue = issueRepository.findById(issueId)
