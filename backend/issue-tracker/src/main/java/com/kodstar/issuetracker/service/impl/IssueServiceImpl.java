@@ -3,6 +3,7 @@ package com.kodstar.issuetracker.service.impl;
 import com.kodstar.issuetracker.auth.User;
 import com.kodstar.issuetracker.dto.CommentDTO;
 import com.kodstar.issuetracker.dto.IssueDTO;
+import com.kodstar.issuetracker.dto.IssueHistoryDTO;
 import com.kodstar.issuetracker.dto.PagesDTO;
 import com.kodstar.issuetracker.entity.*;
 import com.kodstar.issuetracker.exceptionhandler.InvalidQueryParameterException;
@@ -36,6 +37,7 @@ public class IssueServiceImpl implements IssueService {
     private final FromCommentDTOToComment fromCommentDTOtoComment;
     private final StateRepository stateRepository;
     private final IssueHistoryRepository issueHistoryRepository;
+    private final FromIssueHistoryToIssueHistoryDTO fromIssueHistoryToIssueHistoryDTO;
 
     private final static String ASCENDING = "asc";
     private final static String DESCENDING = "desc";
@@ -47,7 +49,8 @@ public class IssueServiceImpl implements IssueService {
                             FromIssueToIssueDTO fromIssueToIssueDTO, FromIssueDTOToIssue fromIssueDTOToIssue,
                             CommentService commentService,
                             FromCommentDTOToComment fromCommentDTOtoComment, StateRepository stateRepository,
-                            IssueHistoryRepository issueHistoryRepository) {
+                            IssueHistoryRepository issueHistoryRepository,
+                            FromIssueHistoryToIssueHistoryDTO fromIssueHistoryToIssueHistoryDTO) {
 
         this.issueRepository = issueRepository;
         this.labelRepository = labelRepository;
@@ -59,6 +62,7 @@ public class IssueServiceImpl implements IssueService {
         this.fromCommentDTOtoComment = fromCommentDTOtoComment;
         this.stateRepository = stateRepository;
         this.issueHistoryRepository = issueHistoryRepository;
+        this.fromIssueHistoryToIssueHistoryDTO=fromIssueHistoryToIssueHistoryDTO;
     }
 
     @Override
@@ -168,12 +172,20 @@ public class IssueServiceImpl implements IssueService {
     }
 
     @Override
+    @Transactional
     public IssueDTO updateState(Long issueId, Long stateId) {
         Issue issue = issueRepository.findById(issueId)
                 .orElseThrow(() -> new IssueTrackerNotFoundException("Issue", issueId.toString()));
         State state = stateRepository.findById(stateId)
                 .orElseThrow(() -> new IssueTrackerNotFoundException("State", stateId.toString()));
         issue.setState(state);
+
+        IssueHistory issueHistory = new IssueHistory();
+        issueHistory.setIssue(issue);
+        issueHistory.setHistoryType(HistoryType.STATE_CHANGED);
+        issueHistory.setState(state);
+        issueHistoryRepository.save(issueHistory);
+
         return fromIssueToIssueDTO.convert(issueRepository.save(issue));
     }
 
@@ -355,6 +367,14 @@ public class IssueServiceImpl implements IssueService {
         List<Issue> issues = issueRepository.findAllByAssigneesContains(user);
         return fromIssueToIssueDTO.convertAll(issues);
 
+    }
+
+    @Override
+    public List<IssueHistoryDTO> getHistoryInformation(Long issueId) {
+        Issue issue = issueRepository.findById(issueId)
+                .orElseThrow(() -> new IssueTrackerNotFoundException("Issue", issueId.toString()));
+        List<IssueHistory> issueHistories=issueHistoryRepository.findByIssue(issue);
+        return fromIssueHistoryToIssueHistoryDTO.convertAll(issueHistories);
     }
 
 }

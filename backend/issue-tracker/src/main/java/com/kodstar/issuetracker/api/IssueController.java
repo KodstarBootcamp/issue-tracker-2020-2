@@ -1,14 +1,7 @@
 package com.kodstar.issuetracker.api;
 
-import com.kodstar.issuetracker.dto.CommentDTO;
-import com.kodstar.issuetracker.dto.IssueDTO;
+import com.kodstar.issuetracker.dto.*;
 
-import com.kodstar.issuetracker.dto.UserDTO;
-import com.kodstar.issuetracker.dto.PagesDTO;
-import com.kodstar.issuetracker.exceptionhandler.InvalidQueryParameterException;
-import com.kodstar.issuetracker.entity.Comment;
-import com.kodstar.issuetracker.entity.Issue;
-import com.kodstar.issuetracker.exceptionhandler.InvalidQueryParameterException;
 import com.kodstar.issuetracker.service.IssueService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.lang.NonNull;
@@ -128,6 +121,11 @@ public class IssueController {
     @GetMapping("issues/user/issues")
     public ResponseEntity<List<IssueDTO>> getAllIssuesByCurrentUser(Principal principal) {
         return new ResponseEntity(issueService.findALlIssuesByCurrentUser(principal), HttpStatus.OK);
+    }
+
+    @GetMapping("issue/{issueId}/history")
+    public ResponseEntity<List<IssueHistoryDTO>> getHistoryInformation(@PathVariable Long issueId){
+        return new ResponseEntity(issueService.getHistoryInformation(issueId), HttpStatus.OK);
     }
 
 

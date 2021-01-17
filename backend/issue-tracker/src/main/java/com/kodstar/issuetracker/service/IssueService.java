@@ -1,15 +1,11 @@
 package com.kodstar.issuetracker.service;
 
-import com.kodstar.issuetracker.dto.CommentDTO;
-import com.kodstar.issuetracker.dto.IssueDTO;
+import com.kodstar.issuetracker.dto.*;
 
-import com.kodstar.issuetracker.dto.LabelDTO;
-import com.kodstar.issuetracker.dto.UserDTO;
 import com.kodstar.issuetracker.entity.Comment;
 import com.kodstar.issuetracker.entity.Issue;
 import com.kodstar.issuetracker.entity.Label;
 import org.springframework.data.domain.Page;
-import com.kodstar.issuetracker.dto.PagesDTO;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.Param;
@@ -61,4 +57,6 @@ public interface IssueService {
     IssueDTO removeAssigneeFromIssue(Long userId, Long issueId);
 
     List<IssueDTO> findALlIssuesByCurrentUser(Principal principal);
+
+    List<IssueHistoryDTO> getHistoryInformation(Long issueId);
 }
