@@ -142,11 +142,9 @@ public class IssueServiceImpl implements IssueService {
                 .findFirst();
         if (comment.isPresent()) {
             issue.getComments().remove(comment.get());
-            IssueHistory issueHistory = new IssueHistory();
-            issueHistory.setIssue(issue);
-            issueHistory.setHistoryType(HistoryType.COMMENT_DELETED);
-            issueHistory.setComment(comment.get());
-            issueHistoryRepository.save(issueHistory);
+            IssueHistory issueHistory = issueHistoryRepository.findByComment(comment.get())
+                    .orElseThrow(() -> new IssueTrackerNotFoundException("Issue History with Comment"+commentId+" is not found"));
+            issueHistoryRepository.delete(issueHistory);
         } else {
             throw new IssueTrackerNotFoundException("Comment", commentId.toString());
         }

@@ -6,4 +6,7 @@ public class IssueTrackerNotFoundException extends RuntimeException {
     public IssueTrackerNotFoundException(String entityType, String id) {
         super(String.format(MESSAGE, entityType, entityType, id));
     }
+    public IssueTrackerNotFoundException(String message) {
+        super(String.format(message));
+    }
 }
