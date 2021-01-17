@@ -3,7 +3,6 @@ package com.kodstar.issuetracker.service.impl;
 import com.kodstar.issuetracker.auth.User;
 import com.kodstar.issuetracker.dto.CommentDTO;
 import com.kodstar.issuetracker.dto.IssueDTO;
-import com.kodstar.issuetracker.dto.UserDTO;
 import com.kodstar.issuetracker.dto.PagesDTO;
 import com.kodstar.issuetracker.entity.*;
 import com.kodstar.issuetracker.exceptionhandler.InvalidQueryParameterException;
@@ -14,9 +13,7 @@ import com.kodstar.issuetracker.service.IssueService;
 import com.kodstar.issuetracker.utils.impl.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -229,6 +226,14 @@ public class IssueServiceImpl implements IssueService {
                 .orElseThrow(NoSuchElementException::new);
 
         issue.getLabels().remove(label);
+
+        IssueHistory issueHistory = new IssueHistory();
+        issueHistory.setIssue(issue);
+        issueHistory.setHistoryType(HistoryType.LABEL_REMOVED);
+        HashSet<Label> labels = new HashSet<>();
+        labels.add(label);
+        issueHistory.setLabels(labels);
+        issueHistoryRepository.save(issueHistory);
         return fromIssueToIssueDTO.convert(issueRepository.save(issue));
     }
 
