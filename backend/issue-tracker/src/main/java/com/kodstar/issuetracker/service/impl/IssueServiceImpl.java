@@ -19,10 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Principal;
-import java.util.HashSet;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 
 
 @Service
@@ -307,6 +304,14 @@ public class IssueServiceImpl implements IssueService {
                 .orElseThrow(NoSuchElementException::new);
 
         issue.getAssignees().add(user);
+
+        IssueHistory issueHistory = new IssueHistory();
+        issueHistory.setIssue(issue);
+        issueHistory.setHistoryType(HistoryType.ASSIGNEE_ADDED);
+        Set<User> assignees = new HashSet<>();
+        assignees.add(user);
+        issueHistory.setAssignee(user);
+        issueHistoryRepository.save(issueHistory);
         return fromIssueToIssueDTO.convert(issueRepository.save(issue));
     }
 
@@ -320,6 +325,13 @@ public class IssueServiceImpl implements IssueService {
                 .orElseThrow(NoSuchElementException::new);
 
         issue.getAssignees().remove(user);
+        IssueHistory issueHistory = new IssueHistory();
+        issueHistory.setIssue(issue);
+        issueHistory.setHistoryType(HistoryType.ASSIGNEE_REMOVED);
+        Set<User> assignees = new HashSet<>();
+        assignees.add(user);
+        issueHistory.setAssignee(user);
+        issueHistoryRepository.save(issueHistory);
         return fromIssueToIssueDTO.convert(issueRepository.save(issue));
     }
 
