@@ -5,16 +5,10 @@ import com.kodstar.issuetracker.dto.CommentDTO;
 import com.kodstar.issuetracker.dto.IssueDTO;
 import com.kodstar.issuetracker.dto.UserDTO;
 import com.kodstar.issuetracker.dto.PagesDTO;
-import com.kodstar.issuetracker.entity.Comment;
-import com.kodstar.issuetracker.entity.Issue;
-import com.kodstar.issuetracker.entity.Label;
-import com.kodstar.issuetracker.entity.State;
+import com.kodstar.issuetracker.entity.*;
 import com.kodstar.issuetracker.exceptionhandler.InvalidQueryParameterException;
 import com.kodstar.issuetracker.exceptionhandler.IssueTrackerNotFoundException;
-import com.kodstar.issuetracker.repo.IssueRepository;
-import com.kodstar.issuetracker.repo.LabelRepository;
-import com.kodstar.issuetracker.repo.StateRepository;
-import com.kodstar.issuetracker.repo.UserRepository;
+import com.kodstar.issuetracker.repo.*;
 import com.kodstar.issuetracker.service.CommentService;
 import com.kodstar.issuetracker.service.IssueService;
 import com.kodstar.issuetracker.utils.impl.*;
@@ -45,8 +39,8 @@ public class IssueServiceImpl implements IssueService {
     private final FromIssueDTOToIssue fromIssueDTOToIssue;
     private final CommentService commentService;
     private final FromCommentDTOToComment fromCommentDTOtoComment;
-
     private final StateRepository stateRepository;
+    private final IssueHistoryRepository issueHistoryRepository;
 
     private final static String ASCENDING = "asc";
     private final static String DESCENDING = "desc";
@@ -57,7 +51,8 @@ public class IssueServiceImpl implements IssueService {
     public IssueServiceImpl(IssueRepository issueRepository, LabelRepository labelRepository, UserRepository userRepository, ModelMapper modelMapper,
                             FromIssueToIssueDTO fromIssueToIssueDTO, FromIssueDTOToIssue fromIssueDTOToIssue,
                             CommentService commentService,
-                            FromCommentDTOToComment fromCommentDTOtoComment, StateRepository stateRepository) {
+                            FromCommentDTOToComment fromCommentDTOtoComment, StateRepository stateRepository,
+                            IssueHistoryRepository issueHistoryRepository) {
 
         this.issueRepository = issueRepository;
         this.labelRepository = labelRepository;
@@ -68,12 +63,19 @@ public class IssueServiceImpl implements IssueService {
         this.commentService = commentService;
         this.fromCommentDTOtoComment = fromCommentDTOtoComment;
         this.stateRepository = stateRepository;
+        this.issueHistoryRepository=issueHistoryRepository;
     }
 
     @Override
+    @Transactional
     public IssueDTO createIssue(IssueDTO idt) {
         Issue issue = fromIssueDTOToIssue.convert(idt);
-        IssueDTO issueDto = fromIssueToIssueDTO.convert(issueRepository.save(issue));
+        issue=issueRepository.save(issue);
+        IssueDTO issueDto = fromIssueToIssueDTO.convert(issue);
+        IssueHistory issueHistory=new IssueHistory();
+        issueHistory.setIssue(issue);
+        issueHistory.setHistoryType(HistoryType.ISSUE_CREATED);
+        issueHistoryRepository.save(issueHistory);
         return issueDto;
     }
 
