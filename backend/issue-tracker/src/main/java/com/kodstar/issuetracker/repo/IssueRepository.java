@@ -40,6 +40,7 @@ public interface IssueRepository extends JpaRepository<Issue, Long> {
     Page<Issue> findAllByOrderByUpdateTime(Pageable pageable);
 
     Page<Issue> findAllByOrderByUpdateTimeDesc(Pageable pageable);
+
     List<Issue> findAllByAssigneesContains(User user);
 
 

@@ -26,4 +26,13 @@ public interface UserService {
 
     VerificationToken getVerificationToken(String VerificationToken);
 
+    User createUser(User user);
+
+    User save(User user);
+    User findByUsername(String username);
+
+    User findByEmail(String email);
+
+
+
 }

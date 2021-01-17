@@ -35,7 +35,7 @@ public class User implements  Serializable {
 
     private String email;
 
-
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(name = "verification", length = 64)
     private String verification;
 

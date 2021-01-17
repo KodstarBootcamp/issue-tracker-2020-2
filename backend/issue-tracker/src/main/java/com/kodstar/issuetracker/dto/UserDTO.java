@@ -13,7 +13,7 @@ import javax.validation.constraints.NotBlank;
 public class UserDTO {
 
     private long id;
-   // @NotBlank(message = "invalid input, Username  can't be null")
+    @NotBlank(message = "invalid input, Username  can't be null")
     private String username;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
@@ -21,8 +21,9 @@ public class UserDTO {
 
     private String email;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String verification;
 
-    private boolean enabled;
+
 
 }

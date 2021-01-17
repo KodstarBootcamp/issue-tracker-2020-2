@@ -13,14 +13,14 @@ VALUES (600, 'My issue', 'ACTIVE', 'Issue1', '2020-02-12', '2020-10-12');
 INSERT INTO t_issue (id, issue_description, issue_status, issue_title, create_time, update_time)
 VALUES (700, 'New Issue', 'ACTIVE', 'myTitle', '2020-11-11', '2021-01-02');
 
-INSERT INTO t_users (id, username, password)
-VALUES (1000, 'Kodstar', '$2a$10$2wjebL7o4No1w3DSfTFtxO4z5C7546BACzUlxSN8vW74v0cgVKLbC');
-INSERT INTO t_users (id, username, password)
-VALUES (2000, 'admin', '$2a$10$2wjebL7o4No1w3DSfTFtxO4z5C7546BACzUlxSN8vW74v0cgVKLbC');
-INSERT INTO t_users (id, username, password)
-VALUES (3000, 'user1', '$2a$10$2wjebL7o4No1w3DSfTFtxO4z5C7546BACzUlxSN8vW74v0cgVKLbC');
-INSERT INTO t_users (id, username, password)
-VALUES (4000, 'user2', '$2a$10$2wjebL7o4No1w3DSfTFtxO4z5C7546BACzUlxSN8vW74v0cgVKLbC');
+INSERT INTO t_users (id, username, password,email, verification,enabled)
+VALUES (1000, 'kodstar', '$2a$10$2wjebL7o4No1w3DSfTFtxO4z5C7546BACzUlxSN8vW74v0cgVKLbC', 'kodstar1@yopmail.com', 'ikbenaeentoken',1);
+INSERT INTO t_users (id, username, password,email, verification,enabled)
+VALUES (2000, 'admin', '$2a$10$2wjebL7o4No1w3DSfTFtxO4z5C7546BACzUlxSN8vW74v0cgVKLbC', 'kodstar2@yopmail.com', 'ikbenaeentoken',1);
+INSERT INTO t_users (id, username, password,email, verification,enabled)
+VALUES (3000, 'user1', '$2a$10$2wjebL7o4No1w3DSfTFtxO4z5C7546BACzUlxSN8vW74v0cgVKLbC', 'kodstar3@yopmail.com', 'ikbenaeentoken',1);
+INSERT INTO t_users (id, username, password,email, verification,enabled)
+VALUES (4000, 'user2', '$2a$10$2wjebL7o4No1w3DSfTFtxO4z5C7546BACzUlxSN8vW74v0cgVKLbC', 'kodstar4@yopmail.com','ikbenaeentoken', 1);
 
 INSERT INTO t_label (id, label_name, label_color)
 VALUES (150, 'backend', '#fbca04');

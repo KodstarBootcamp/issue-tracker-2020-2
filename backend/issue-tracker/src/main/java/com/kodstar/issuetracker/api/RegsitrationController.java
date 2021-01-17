@@ -7,6 +7,7 @@ import com.kodstar.issuetracker.entity.VerificationToken;
 import com.kodstar.issuetracker.eventlistener.OnRegistrationCompleteEvent;
 import com.kodstar.issuetracker.service.UserService;
 import com.kodstar.issuetracker.utils.impl.FromUserToUserDTO;
+import org.modelmapper.ModelMapper;
 import org.modelmapper.internal.Errors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -24,7 +25,9 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Set;
 
 @RestController
 @CrossOrigin("*")
@@ -43,27 +46,61 @@ public class RegsitrationController {
     @Autowired
     private MessageSource messages;
 
+
+  /*  @PostMapping("/users/sign-up")
+    public ResponseEntity register(@RequestBody UserDTO userDto) throws Exception {
+
+        ModelMapper modelMapper = new ModelMapper();
+
+
+        // is email already register?
+
+        if(userService.findByEmail(userDto.getEmail())!=null) {
+            return new ResponseEntity("Email has already registered", HttpStatus.BAD_REQUEST);
+        }else if(userService.findByUsername(userDto.getUsername())!=null)  {
+            return new ResponseEntity("Username has already registered", HttpStatus.BAD_REQUEST);
+        }else {
+
+            User savingUser=modelMapper.map(userDto,User.class);
+
+
+            try {
+                savingUser=userService.createUser(savingUser);
+
+                return new ResponseEntity("User registered successfully, userId: "+savingUser.getId(), HttpStatus.OK);
+
+            }catch(Exception e) {
+                return new ResponseEntity("Db Error", HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
+        }
+
+    }*/
+
     @PostMapping("/users/sign-up")
     public ResponseEntity registerUserAccount(@Valid @NonNull @RequestBody UserDTO userDto,
             HttpServletRequest request, Errors errors) {
-        User userSaved =null;
-        UserDTO savedUserDTO=null;
+        User userSaved ;
+        UserDTO savedUserDTO;
 
-        try {
-            userSaved = userService.registerNewUserAccount(userDto);
+        if (userService.findByEmail(userDto.getEmail()) != null) {
+            return new ResponseEntity("Email has already registered", HttpStatus.BAD_REQUEST);
+        } else if (userService.findByUsername(userDto.getUsername()) != null) {
+            return new ResponseEntity("Username has already registered", HttpStatus.BAD_REQUEST);
+        } else {
 
-            String appUrl = request.getContextPath();
-            eventPublisher.publishEvent(new OnRegistrationCompleteEvent(userSaved,
-                    request.getLocale(), appUrl));
-        } catch (IllegalArgumentException uaeEx) {
+                userSaved = userService.registerNewUserAccount(userDto);
 
-        } catch (RuntimeException ex) {
+                String appUrl = request.getContextPath();
+                eventPublisher.publishEvent(new OnRegistrationCompleteEvent(userSaved,
+                        request.getLocale(), appUrl));
 
+            savedUserDTO = fromUserToUserDTO.convert(userSaved);
+
+            return new ResponseEntity(savedUserDTO, HttpStatus.OK);
         }
-        savedUserDTO= fromUserToUserDTO.convert(userSaved)      ;
-
-        return new ResponseEntity(savedUserDTO, HttpStatus.OK);
     }
+
 
     @GetMapping("/confirm/{token}")
     public String confirmRegistration(WebRequest request, @PathVariable("token")  String token) {
