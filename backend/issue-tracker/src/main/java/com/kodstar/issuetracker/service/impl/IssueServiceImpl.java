@@ -245,22 +245,33 @@ public class IssueServiceImpl implements IssueService {
     }
 
     @Override
+    @Transactional
     public IssueDTO editIssue(Long issueId, IssueDTO issue) {
         Issue updatedIssue = issueRepository.findById(issueId)
                 .orElseThrow(NoSuchElementException::new);
 
         modelMapper.getConfiguration().setSkipNullEnabled(true);
         modelMapper.map(issue, updatedIssue);
-
         IssueDTO issueDTO = fromIssueToIssueDTO.convert(issueRepository.save(updatedIssue));
-
+        IssueHistory issueHistory=new IssueHistory();
+        issueHistory.setIssue(updatedIssue);
+        issueHistory.setHistoryType(HistoryType.ISSUE_MODIFIED);
+        issueHistoryRepository.save(issueHistory);
         return issueDTO;
 
     }
 
     @Override
+    @Transactional
     public void deleteIssue(Long issueId) {
+        Issue issue = issueRepository.findById(issueId)
+                .orElseThrow(NoSuchElementException::new);
+        IssueHistory issueHistory=new IssueHistory();
+        issueHistory.setIssue(issue);
+        issueHistory.setHistoryType(HistoryType.ISSUE_DELETED);
+        issueHistoryRepository.save(issueHistory);
         issueRepository.deleteById(issueId);
+
     }
 
 
