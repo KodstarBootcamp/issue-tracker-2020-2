@@ -39,10 +39,11 @@ public class RegsitrationController {
     @Autowired
     private FromUserToUserDTO fromUserToUserDTO;
 
+    @Qualifier("abc")
     @Autowired
     private MessageSource messages;
 
-    @PostMapping("register")
+    @PostMapping("/users/sign-up")
     public ResponseEntity registerUserAccount(@Valid @NonNull @RequestBody UserDTO userDto,
             HttpServletRequest request, Errors errors) {
         User userSaved =null;
@@ -59,33 +60,34 @@ public class RegsitrationController {
         } catch (RuntimeException ex) {
 
         }
-        userDto= fromUserToUserDTO.convert(userSaved)      ;
+        savedUserDTO= fromUserToUserDTO.convert(userSaved)      ;
 
-        return new ResponseEntity(userDto, HttpStatus.OK);
+        return new ResponseEntity(savedUserDTO, HttpStatus.OK);
     }
 
-    @GetMapping("/confirm")
-    public String confirmRegistration(WebRequest request, Model model, @RequestParam("token") String token) {
+    @GetMapping("/confirm/{token}")
+    public String confirmRegistration(WebRequest request, @PathVariable("token")  String token) {
 
         Locale locale = request.getLocale();
 
+
         VerificationToken verificationToken = userService.getVerificationToken(token);
-        if (verificationToken == null) {
-            String message = messages.getMessage("auth.message.invalidToken", null, locale);
-            model.addAttribute("message", message);
-            return "redirect:/badUser.html?lang=" + locale.getLanguage();
-        }
-
         User user = verificationToken.getUser();
-        Calendar cal = Calendar.getInstance();
-        if ((verificationToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
-            String messageValue = messages.getMessage("auth.message.expired", null, locale);
-            model.addAttribute("message", messageValue);
-            return "redirect:/badUser.html?lang=" + locale.getLanguage();
-        }
-
         user.setEnabled(true);
         userService.saveRegisteredUser(user);
-        return "redirect:/login.html?lang=" + request.getLocale().getLanguage();
+
+        if (verificationToken == null) {
+            return  "hello";
+        }
+
+      //  User user = verificationToken.getUser();
+        Calendar cal = Calendar.getInstance();
+       /* if ((verificationToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
+            return  "hello2";
+        }*/
+
+       // user.setEnabled(true);
+      //  userService.saveRegisteredUser(user);
+        return  "hello3";
     }
 }

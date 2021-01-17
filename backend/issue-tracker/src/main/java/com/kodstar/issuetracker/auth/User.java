@@ -20,7 +20,7 @@ import java.util.Collection;
 @AllArgsConstructor
 //@NoArgsConstructor
 @Table(name = "t_users")
-public class User implements UserDetails, Serializable {
+public class User implements  Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -47,10 +47,10 @@ public class User implements UserDetails, Serializable {
     }
 
 
-
+/*
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
-    }
+    }*/
 
 
     public boolean isAccountNonExpired() {

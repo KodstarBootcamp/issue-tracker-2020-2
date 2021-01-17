@@ -29,11 +29,11 @@ public class UserController {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
-    @PostMapping("/sign-up")
+/*    @PostMapping("/sign-up")
     public void signUp(@RequestBody User user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userDAO.save(user);
-    }
+    }*/
 
     @GetMapping()
     public ResponseEntity<Set<UserDTO>> getAllUsers() {
