@@ -44,8 +44,7 @@ public class LabelServiceImpl implements LabelService {
     @Override
     public LabelDTO createLabel(LabelDTO labelDTO) {
         Label label = fromLabelDTOToLabel.convert(labelDTO);
-        LabelDTO labelDto =  fromLabelToLabelDTO.convert(labelRepository.save(label));
-        return labelDto;
+        return fromLabelToLabelDTO.convert(labelRepository.save(label));
     }
 
     @Override

@@ -8,12 +8,11 @@ import com.kodstar.issuetracker.service.StateService;
 import com.kodstar.issuetracker.utils.impl.FromStateDTOToState;
 import com.kodstar.issuetracker.utils.impl.FromStateToStateDTO;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.NoSuchElementException;
+
 
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -22,8 +21,6 @@ public class StateServiceImpl implements StateService {
     private final StateRepository stateRepository;
     private final FromStateToStateDTO fromStateToStateDTO;
     private final FromStateDTOToState fromStateDTOToState;
-    private final ModelMapper modelMapper;
-
 
     @Override
     public StateDTO createState(StateDTO stateDTO) {

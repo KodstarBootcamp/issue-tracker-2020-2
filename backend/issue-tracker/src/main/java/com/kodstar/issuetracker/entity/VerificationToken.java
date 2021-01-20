@@ -3,9 +3,7 @@ package com.kodstar.issuetracker.entity;
 import com.kodstar.issuetracker.auth.User;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-
 import javax.persistence.*;
-import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -13,7 +11,7 @@ import java.util.Date;
 @Data
 @RequiredArgsConstructor
 public class VerificationToken {
-    private static final int EXPIRATION = 60 * 24;
+    public static final int EXPIRATION =  60 * 24;
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -34,11 +32,10 @@ public class VerificationToken {
     }
 
 
-    private Date calculateExpiryDate(int expiryTimeInMinutes) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(new Timestamp(cal.getTime().getTime()));
-        cal.add(Calendar.MINUTE, expiryTimeInMinutes);
-        return new Date(cal.getTime().getTime());
+    public void setExpiryDate(int minutes) {
+        Calendar now = Calendar.getInstance();
+         now.add(Calendar.MINUTE, minutes);
+        this.expiryDate = now.getTime();
     }
 
     public boolean isExpired() {

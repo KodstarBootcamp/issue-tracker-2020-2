@@ -87,5 +87,11 @@ public class GlobalExceptionHandler {
     }
 
 
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(NullPointerException.class)
+    public String ifEntityIsExist(NullPointerException e) {
+        return "Invalid value.";
+    }
+
 
 }

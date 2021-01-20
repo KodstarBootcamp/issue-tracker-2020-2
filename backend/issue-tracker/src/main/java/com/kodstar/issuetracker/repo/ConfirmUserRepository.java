@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ConfirmUserRepository extends CrudRepository<VerificationToken,Long> {
     VerificationToken findByToken(String token);
-    boolean findByUser(User user);
+    VerificationToken findByUser(User user);
 }

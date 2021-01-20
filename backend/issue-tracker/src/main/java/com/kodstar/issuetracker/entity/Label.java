@@ -18,7 +18,6 @@ public class Label {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    //LabelName cant be @id because one label can be used with many issues. so it musn t be unique at the issue creation time.
     @NotBlank(message = "invalid input, Label name can't be null")
     @Column()
     private String labelName;

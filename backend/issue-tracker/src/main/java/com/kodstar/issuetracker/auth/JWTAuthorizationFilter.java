@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import static com.kodstar.issuetracker.security.SecurityConstants.HEADER_STRING;
-import static com.kodstar.issuetracker.security.SecurityConstants.SECRET;
 import static com.kodstar.issuetracker.security.SecurityConstants.TOKEN_PREFIX;
 
 

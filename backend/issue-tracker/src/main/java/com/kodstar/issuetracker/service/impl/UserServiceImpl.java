@@ -4,14 +4,15 @@ import com.kodstar.issuetracker.auth.User;
 import com.kodstar.issuetracker.dto.UserDTO;
 
 import com.kodstar.issuetracker.entity.VerificationToken;
+import com.kodstar.issuetracker.repo.ConfirmUserRepository;
 import com.kodstar.issuetracker.repo.UserRepository;
-import com.kodstar.issuetracker.repo.VerificationTokenRepository;
 import com.kodstar.issuetracker.service.UserService;
 import com.kodstar.issuetracker.utils.impl.FromUserDTOToUser;
 import com.kodstar.issuetracker.utils.impl.FromUserToUserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
@@ -25,13 +26,13 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final FromUserToUserDTO fromUserToUserDTO;
     private final FromUserDTOToUser fromUserDTOToUser;
-    private final VerificationTokenRepository tokenRepository;
+    private final ConfirmUserRepository confirmUserRepository;
 
-    public UserServiceImpl(UserRepository userRepository, FromUserToUserDTO fromUserToUserDTO, FromUserDTOToUser fromUserDTOToUser, VerificationTokenRepository tokenRepository) {
+    public UserServiceImpl(UserRepository userRepository, FromUserToUserDTO fromUserToUserDTO, FromUserDTOToUser fromUserDTOToUser, ConfirmUserRepository confirmUserRepository) {
         this.userRepository = userRepository;
         this.fromUserToUserDTO = fromUserToUserDTO;
         this.fromUserDTOToUser = fromUserDTOToUser;
-        this.tokenRepository = tokenRepository;
+        this.confirmUserRepository = confirmUserRepository;
     }
 
     @Override
@@ -60,42 +61,19 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException("Email already in use!");
         }
 
-        User user2 = new User();
-        user2.setUsername(userDTO.getUsername());
+        User user = new User();
+        user.setUsername(userDTO.getUsername());
         String password2 = bCryptPasswordEncoder.encode(userDTO.getPassword());
-        user2.setPassword(password2);
-        user2.setEmail(userDTO.getEmail());
-        user2.setVerification(userDTO.getVerification());
-        System.out.println(user2.getUsername());
-        return userRepository.save(user2);
+        user.setPassword(password2);
+        user.setEmail(userDTO.getEmail());
+
+        return userRepository.save(user);
     }
 
     private boolean emailExist(String email) {
         return userRepository.findByEmail(email) != null;
     }
 
-    @Override
-    public UserDTO getUser(String verificationToken) {
-
-        User user = tokenRepository.findByToken(verificationToken).getUser();
-        return fromUserToUserDTO.convert(user);
-
-    }
-
-    @Override
-    public VerificationToken getVerificationToken(String VerificationToken) {
-        return tokenRepository.findByToken(VerificationToken);
-    }
-
-    @Override
-    public User createUser(User user) {
-        return null;
-    }
-
-    @Override
-    public User save(User user) {
-        return null;
-    }
 
     @Override
     public User findByUsername(String username) {
@@ -112,10 +90,14 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
+    @Transactional
     @Override
     public void createVerificationToken(User user, String token) {
         VerificationToken myToken = new VerificationToken(token, user);
-        tokenRepository.save(myToken);
+        user.setVerification(token);
+        userRepository.save(user);
+        myToken.setExpiryDate(VerificationToken.EXPIRATION);
+        confirmUserRepository.save(myToken);
     }
 
 }

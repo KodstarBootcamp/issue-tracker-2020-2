@@ -1,7 +1,6 @@
 package com.kodstar.issuetracker.auth;
 
 
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,6 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.Collection;
@@ -20,7 +20,7 @@ import java.util.Collection;
 @AllArgsConstructor
 //@NoArgsConstructor
 @Table(name = "t_users")
-public class User implements  Serializable {
+public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -33,6 +33,7 @@ public class User implements  Serializable {
     @NotBlank(message = "invalid input, password can't be null")
     private String password;
 
+    @Email
     private String email;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
@@ -43,14 +44,8 @@ public class User implements  Serializable {
     private boolean enabled;
 
     public User() {
-        this.enabled=false;
+        this.enabled = false;
     }
-
-
-/*
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
-    }*/
 
 
     public boolean isAccountNonExpired() {
