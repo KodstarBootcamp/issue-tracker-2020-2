@@ -3,34 +3,24 @@ package com.kodstar.issuetracker.service.impl;
 import com.kodstar.issuetracker.auth.User;
 import com.kodstar.issuetracker.dto.CommentDTO;
 import com.kodstar.issuetracker.dto.IssueDTO;
-import com.kodstar.issuetracker.dto.UserDTO;
+import com.kodstar.issuetracker.dto.IssueHistoryDTO;
 import com.kodstar.issuetracker.dto.PagesDTO;
-import com.kodstar.issuetracker.entity.Comment;
-import com.kodstar.issuetracker.entity.Issue;
-import com.kodstar.issuetracker.entity.Label;
-import com.kodstar.issuetracker.entity.State;
+import com.kodstar.issuetracker.entity.*;
 import com.kodstar.issuetracker.exceptionhandler.InvalidQueryParameterException;
 import com.kodstar.issuetracker.exceptionhandler.IssueTrackerNotFoundException;
-import com.kodstar.issuetracker.repo.IssueRepository;
-import com.kodstar.issuetracker.repo.LabelRepository;
-import com.kodstar.issuetracker.repo.StateRepository;
-import com.kodstar.issuetracker.repo.UserRepository;
+import com.kodstar.issuetracker.repo.*;
 import com.kodstar.issuetracker.service.CommentService;
 import com.kodstar.issuetracker.service.IssueService;
 import com.kodstar.issuetracker.utils.impl.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Principal;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 
 
 @Service
@@ -45,8 +35,9 @@ public class IssueServiceImpl implements IssueService {
     private final FromIssueDTOToIssue fromIssueDTOToIssue;
     private final CommentService commentService;
     private final FromCommentDTOToComment fromCommentDTOtoComment;
-
     private final StateRepository stateRepository;
+    private final IssueHistoryRepository issueHistoryRepository;
+    private final FromIssueHistoryToIssueHistoryDTO fromIssueHistoryToIssueHistoryDTO;
 
     private final static String ASCENDING = "asc";
     private final static String DESCENDING = "desc";
@@ -57,7 +48,9 @@ public class IssueServiceImpl implements IssueService {
     public IssueServiceImpl(IssueRepository issueRepository, LabelRepository labelRepository, UserRepository userRepository, ModelMapper modelMapper,
                             FromIssueToIssueDTO fromIssueToIssueDTO, FromIssueDTOToIssue fromIssueDTOToIssue,
                             CommentService commentService,
-                            FromCommentDTOToComment fromCommentDTOtoComment, StateRepository stateRepository) {
+                            FromCommentDTOToComment fromCommentDTOtoComment, StateRepository stateRepository,
+                            IssueHistoryRepository issueHistoryRepository,
+                            FromIssueHistoryToIssueHistoryDTO fromIssueHistoryToIssueHistoryDTO) {
 
         this.issueRepository = issueRepository;
         this.labelRepository = labelRepository;
@@ -68,12 +61,20 @@ public class IssueServiceImpl implements IssueService {
         this.commentService = commentService;
         this.fromCommentDTOtoComment = fromCommentDTOtoComment;
         this.stateRepository = stateRepository;
+        this.issueHistoryRepository = issueHistoryRepository;
+        this.fromIssueHistoryToIssueHistoryDTO=fromIssueHistoryToIssueHistoryDTO;
     }
 
     @Override
+    @Transactional
     public IssueDTO createIssue(IssueDTO idt) {
         Issue issue = fromIssueDTOToIssue.convert(idt);
-        IssueDTO issueDto = fromIssueToIssueDTO.convert(issueRepository.save(issue));
+        issue = issueRepository.save(issue);
+        IssueDTO issueDto = fromIssueToIssueDTO.convert(issue);
+        IssueHistory issueHistory = new IssueHistory();
+        issueHistory.setIssue(issue);
+        issueHistory.setHistoryType(HistoryType.ISSUE_CREATED);
+        issueHistoryRepository.save(issueHistory);
         return issueDto;
     }
 
@@ -123,6 +124,12 @@ public class IssueServiceImpl implements IssueService {
                 .orElseThrow(NoSuchElementException::new);
         Comment addedComment = commentService.createComment(fromCommentDTOtoComment.convert(commentDTO));
         issue.getComments().add(addedComment);
+
+        IssueHistory issueHistory = new IssueHistory();
+        issueHistory.setIssue(issue);
+        issueHistory.setHistoryType(HistoryType.COMMENT_ADDED);
+        issueHistory.setComment(addedComment);
+        issueHistoryRepository.save(issueHistory);
         return fromIssueToIssueDTO.convert(issueRepository.save(issue));
     }
 
@@ -135,6 +142,9 @@ public class IssueServiceImpl implements IssueService {
                 .findFirst();
         if (comment.isPresent()) {
             issue.getComments().remove(comment.get());
+            IssueHistory issueHistory = issueHistoryRepository.findByComment(comment.get())
+                    .orElseThrow(() -> new IssueTrackerNotFoundException("Issue History with Comment"+commentId+" is not found"));
+            issueHistoryRepository.delete(issueHistory);
         } else {
             throw new IssueTrackerNotFoundException("Comment", commentId.toString());
         }
@@ -160,12 +170,20 @@ public class IssueServiceImpl implements IssueService {
     }
 
     @Override
+    @Transactional
     public IssueDTO updateState(Long issueId, Long stateId) {
         Issue issue = issueRepository.findById(issueId)
                 .orElseThrow(() -> new IssueTrackerNotFoundException("Issue", issueId.toString()));
         State state = stateRepository.findById(stateId)
                 .orElseThrow(() -> new IssueTrackerNotFoundException("State", stateId.toString()));
         issue.setState(state);
+
+        IssueHistory issueHistory = new IssueHistory();
+        issueHistory.setIssue(issue);
+        issueHistory.setHistoryType(HistoryType.STATE_CHANGED);
+        issueHistory.setState(state);
+        issueHistoryRepository.save(issueHistory);
+
         return fromIssueToIssueDTO.convert(issueRepository.save(issue));
     }
 
@@ -215,7 +233,9 @@ public class IssueServiceImpl implements IssueService {
             throw new InvalidQueryParameterException(SORT_TYPE_ERROR_MESSAGE);
         }
     }
+
     @Override
+    @Transactional
     public IssueDTO removeLabelFromIssue(Long labelId, Long issueId) {
 
         Issue issue = issueRepository.findById(issueId)
@@ -225,40 +245,68 @@ public class IssueServiceImpl implements IssueService {
                 .orElseThrow(NoSuchElementException::new);
 
         issue.getLabels().remove(label);
+
+        IssueHistory issueHistory = new IssueHistory();
+        issueHistory.setIssue(issue);
+        issueHistory.setHistoryType(HistoryType.LABEL_REMOVED);
+        HashSet<Label> labels = new HashSet<>();
+        labels.add(label);
+        issueHistory.setLabels(labels);
+        issueHistoryRepository.save(issueHistory);
         return fromIssueToIssueDTO.convert(issueRepository.save(issue));
     }
 
 
-
     @Override
-    public IssueDTO addLabel(Long labelId,Long issueId) {
+    @Transactional
+    public IssueDTO addLabel(Long labelId, Long issueId) {
         Issue issue = issueRepository.findById(issueId)
                 .orElseThrow(NoSuchElementException::new);
 
-       Label label = labelRepository.findById(labelId)
+        Label label = labelRepository.findById(labelId)
                 .orElseThrow(NoSuchElementException::new);
-
         issue.getLabels().add(label);
+        System.out.println(issue.getLabels());
+
+        IssueHistory issueHistory = new IssueHistory();
+        issueHistory.setIssue(issue);
+        issueHistory.setHistoryType(HistoryType.LABEL_ADDED);
+        HashSet<Label> labels = new HashSet<>();
+        labels.add(label);
+        issueHistory.setLabels(labels);
+        issueHistoryRepository.save(issueHistory);
+
         return fromIssueToIssueDTO.convert(issueRepository.save(issue));
     }
 
     @Override
+    @Transactional
     public IssueDTO editIssue(Long issueId, IssueDTO issue) {
         Issue updatedIssue = issueRepository.findById(issueId)
                 .orElseThrow(NoSuchElementException::new);
 
         modelMapper.getConfiguration().setSkipNullEnabled(true);
         modelMapper.map(issue, updatedIssue);
-
         IssueDTO issueDTO = fromIssueToIssueDTO.convert(issueRepository.save(updatedIssue));
-
+        IssueHistory issueHistory = new IssueHistory();
+        issueHistory.setIssue(updatedIssue);
+        issueHistory.setHistoryType(HistoryType.ISSUE_MODIFIED);
+        issueHistoryRepository.save(issueHistory);
         return issueDTO;
 
     }
 
     @Override
+    @Transactional
     public void deleteIssue(Long issueId) {
+        Issue issue = issueRepository.findById(issueId)
+                .orElseThrow(NoSuchElementException::new);
+        IssueHistory issueHistory = new IssueHistory();
+        issueHistory.setIssue(issue);
+        issueHistory.setHistoryType(HistoryType.ISSUE_DELETED);
+        issueHistoryRepository.save(issueHistory);
         issueRepository.deleteById(issueId);
+
     }
 
 
@@ -270,6 +318,7 @@ public class IssueServiceImpl implements IssueService {
     }
 
     @Override
+    @Transactional
     public IssueDTO addAssignee(Long userId, Long issueId) {
         Issue issue = issueRepository.findById(issueId)
                 .orElseThrow(NoSuchElementException::new);
@@ -278,10 +327,19 @@ public class IssueServiceImpl implements IssueService {
                 .orElseThrow(NoSuchElementException::new);
 
         issue.getAssignees().add(user);
+
+        IssueHistory issueHistory = new IssueHistory();
+        issueHistory.setIssue(issue);
+        issueHistory.setHistoryType(HistoryType.ASSIGNEE_ADDED);
+        Set<User> assignees = new HashSet<>();
+        assignees.add(user);
+        issueHistory.setAssignee(user);
+        issueHistoryRepository.save(issueHistory);
         return fromIssueToIssueDTO.convert(issueRepository.save(issue));
     }
 
     @Override
+    @Transactional
     public IssueDTO removeAssigneeFromIssue(Long userId, Long issueId) {
 
         Issue issue = issueRepository.findById(issueId)
@@ -291,6 +349,13 @@ public class IssueServiceImpl implements IssueService {
                 .orElseThrow(NoSuchElementException::new);
 
         issue.getAssignees().remove(user);
+        IssueHistory issueHistory = new IssueHistory();
+        issueHistory.setIssue(issue);
+        issueHistory.setHistoryType(HistoryType.ASSIGNEE_REMOVED);
+        Set<User> assignees = new HashSet<>();
+        assignees.add(user);
+        issueHistory.setAssignee(user);
+        issueHistoryRepository.save(issueHistory);
         return fromIssueToIssueDTO.convert(issueRepository.save(issue));
     }
 
@@ -300,6 +365,14 @@ public class IssueServiceImpl implements IssueService {
         List<Issue> issues = issueRepository.findAllByAssigneesContains(user);
         return fromIssueToIssueDTO.convertAll(issues);
 
+    }
+
+    @Override
+    public List<IssueHistoryDTO> getHistoryInformation(Long issueId) {
+        Issue issue = issueRepository.findById(issueId)
+                .orElseThrow(() -> new IssueTrackerNotFoundException("Issue", issueId.toString()));
+        List<IssueHistory> issueHistories=issueHistoryRepository.findByIssue(issue);
+        return fromIssueHistoryToIssueHistoryDTO.convertAll(issueHistories);
     }
 
 }

@@ -5,10 +5,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import org.springframework.data.domain.Auditable;
+
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -24,7 +28,9 @@ import java.util.Collection;
 @Where(clause = "enabled <> 0")
 //@NoArgsConstructor
 @Table(name = "t_users")
+
 public class User implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
