@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -18,6 +20,8 @@ import java.util.Collection;
 @Entity
 @Data
 @AllArgsConstructor
+@SQLDelete(sql = "UPDATE t_users SET enabled = 0 WHERE id = ?")
+@Where(clause = "enabled <> 0")
 //@NoArgsConstructor
 @Table(name = "t_users")
 public class User implements Serializable {
