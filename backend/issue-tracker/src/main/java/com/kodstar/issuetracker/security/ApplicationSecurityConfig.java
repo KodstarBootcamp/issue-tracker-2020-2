@@ -1,8 +1,5 @@
 package com.kodstar.issuetracker.security;
 
-
-
-
 import com.kodstar.issuetracker.auth.JWTAuthenticationFilter;
 import com.kodstar.issuetracker.auth.JWTAuthorizationFilter;
 import com.kodstar.issuetracker.auth.UserDetailsServiceImpl;
@@ -29,7 +26,7 @@ import static com.kodstar.issuetracker.security.SecurityConstants.SIGN_UP_URL;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)  // if we use annotations with method for permission, we should add this annotation and set prePostEnable=true
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private UserDetailsServiceImpl userDetailsService;
@@ -45,12 +42,12 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable().authorizeRequests()
+                .antMatchers("/confirm/**").permitAll()
                 .antMatchers(HttpMethod.POST, SIGN_UP_URL).permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilter(new JWTAuthenticationFilter(authenticationManager(), secretKey))
                 .addFilter(new JWTAuthorizationFilter(authenticationManager(), secretKey))
-                // this disables session creation on Spring Security
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 
@@ -58,6 +55,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
     }
+
 
     @Bean
     CorsConfiguration corsConfiguration (){

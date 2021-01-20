@@ -10,18 +10,26 @@ import static java.util.Collections.emptyList;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
-    private UserRepository userDAO;
+    private UserRepository userRepository;
 
-    public UserDetailsServiceImpl(UserRepository userDAO) {
-        this.userDAO = userDAO;
+    public UserDetailsServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userDAO.findByUsername(username);
-        if (user == null) {
-            throw new UsernameNotFoundException(username);
+
+            try {
+                User user = userRepository.findByUsername(username);
+                if (user == null) {
+                    throw new UsernameNotFoundException(
+                            "No user found with username: " + username);
+                }
+
+                return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), emptyList());
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
-        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), emptyList());
-    }
+
 }

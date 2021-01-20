@@ -19,16 +19,11 @@ import java.util.List;
 
 public interface IssueRepository extends JpaRepository<Issue, Long> {
     List<Issue> findAll();
-  
 
-   // @Query(value = "select * from t_issue i where i.issue_title like %:keyword%", nativeQuery = true)
     List<Issue> findALlByTitleContaining(String keyword);
 
     Page<Issue> findAll(Pageable pageable);
 
-
-
-   // @Query(value = "select * from t_issue i where  i.issue_description like %:keyword%", nativeQuery = true)
     List<Issue> findALlByDescriptionContaining(String keyword);
 
     List<Issue> findAllByLabelsContains(Label label);
@@ -40,6 +35,7 @@ public interface IssueRepository extends JpaRepository<Issue, Long> {
     Page<Issue> findAllByOrderByUpdateTime(Pageable pageable);
 
     Page<Issue> findAllByOrderByUpdateTimeDesc(Pageable pageable);
+
     List<Issue> findAllByAssigneesContains(User user);
 
 

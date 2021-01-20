@@ -37,7 +37,6 @@ public class IssueController {
         System.out.println(page);
         return new ResponseEntity<>(issueService.getAllIssuesSort(orderType, byWhichSort, PageRequest.of(page, size)), HttpStatus.OK);
 
-
     }
 
 
