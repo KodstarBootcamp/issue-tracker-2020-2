@@ -11,6 +11,7 @@ import {
 } from 'react-bootstrap'
 import Issue from '../../model/issue/Issue'
 import { getLabels } from '../../service/getLabels'
+import Pagination from '@material-ui/lab/Pagination'
 
 import './scss/issues.scss'
 
@@ -23,6 +24,8 @@ export default function Issues () {
   let [sort, setSort] = useState('')
   let [showDeleteButton, setVisibility] = useState('hidden')
   let [deleteSelected, setDelete] = useState(false)
+  let [pageSize, setPageSize] = useState(0)
+  let [currentPage, setCurrent] = useState(0)
 
   useEffect(() => {
     getLabels().then(labels => {
@@ -62,17 +65,27 @@ export default function Issues () {
     }
   }
 
+  const getPageSize = pageSize => {
+    let pages = Math.ceil(pageSize / 3)
+    setPageSize(pages)
+  }
+
+  const setCurrentPage = (event, value) => {
+    setCurrent(value)
+  }
+
   const sortSelections = [
     'Newest',
     'Oldest',
     'Recently Updated',
-    'Least Recently Updated'
+    'Least Recently Updated',
+    'My Issues'
   ]
 
   return (
     <div className='issues'>
       <Container className='issue-container'>
-        <Navbar collapseOnSelect expand='lg' bg='dark' variant='dark'>
+        <Navbar collapseOnSelect expalnd='lg' bg='dark' variant='dark'>
           <Form>
             <Form.Check
               checked={check}
@@ -192,8 +205,18 @@ export default function Issues () {
           sortParams={sort}
           isShow={askDelete}
           deleteSelections={deleteSelected}
+          getPages={getPageSize}
+          page={currentPage}
         />
       </Container>
+      <div className='pagination-container container'>
+        <Pagination
+          count={pageSize}
+          variant='outlined'
+          color='primary'
+          onChange={setCurrentPage}
+        />
+      </div>
     </div>
   )
 }

@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { Form, Row, Button } from 'react-bootstrap'
 import axios from 'axios'
-import history from '../../service/history'
 import './scss/login.scss'
 
 export default function Login (props) {
@@ -33,6 +32,7 @@ export default function Login (props) {
       )
       .then(r => {
         localStorage.setItem('token', r.headers.authorization)
+        localStorage.setItem('username', userName)
         if (r.status === 200) {
           window.location.reload()
         }

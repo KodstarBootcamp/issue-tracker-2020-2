@@ -2,7 +2,6 @@ import React from 'react'
 import { Button, Nav, Navbar } from 'react-bootstrap'
 
 export function Navigation () {
-
   const logout = () => {
     localStorage.removeItem('token')
     window.location.reload()
@@ -21,6 +20,7 @@ export function Navigation () {
         <Nav className='mr-auto'>
           <Nav.Link href='/'>Home</Nav.Link>
           <Nav.Link href='/issues'>Issues</Nav.Link>
+          <Nav.Link href='/flow'>Workflow</Nav.Link>
         </Nav>
         <Button onClick={() => logout()}>Log out</Button>
       </Navbar.Collapse>

@@ -12,7 +12,15 @@ export default function Issue (props) {
   let [issues, setIssues] = useState([])
   let [checkedIssues, setCheck] = useState([])
 
-  let { issueFilter, checkStatus, sortParams, isShow, deleteSelections } = props
+  let {
+    issueFilter,
+    checkStatus,
+    sortParams,
+    isShow,
+    deleteSelections,
+    getPages,
+    page
+  } = props
 
   const dateOptions = {
     day: '2-digit',
@@ -35,33 +43,40 @@ export default function Issue (props) {
 
     if (keyword === 'label' && filterKeyword !== '') {
       getLabels().then(l => {
-        l.data.map(label => {
-          if (label.labelName === filterKeyword) {
-            getFilteredIssues(keyword + ':' + label.id).then(issue => {
-              if (issue.data.content === undefined) {
-                setIssues(issue.data)
-              } else {
-                setIssues(issue.data.content)
-              }
-            })
-          }
-        })
+        l.data.map(label =>
+          label.labelName === filterKeyword
+            ? getFilteredIssues(keyword + ':' + label.id).then(issue =>
+                issue.data.content === undefined
+                  ? setIssues(issue.data)
+                  : setIssues(issue.data.content)
+              )
+            : null
+        )
       })
     } else {
-      getFilteredIssues(issueFilter).then(issue => {
-        if (issue.data.content === undefined) {
-          setIssues(issue.data)
-        } else {
-          setIssues(issue.data.content)
-        }
-      })
+      getFilteredIssues(issueFilter).then(issue =>
+        issue.data.content === undefined
+          ? setIssues(issue.data)
+          : setIssues(issue.data.content)
+      )
     }
   }, [issueFilter])
 
   useEffect(() => {
-    if (sortParams !== '') {
+    if (page) {
+      getIssues(page).then(i => setIssues(i.data.content))
+    }
+  }, [page])
+
+  useEffect(() => {
+    if (sortParams !== '' && sortParams !== 'My Issues') {
       getSortedIssues(sortParams).then(issue => {
         setIssues(issue.data.content)
+      })
+    } else if (sortParams === 'My Issues') {
+      getSortedIssues(sortParams).then(issue => {
+        setIssues(issue.data)
+        getPages(issue.data.length)
       })
     }
   }, [sortParams])
@@ -101,6 +116,12 @@ export default function Issue (props) {
     }
   }, [deleteSelections])
 
+  useEffect(() => {
+    if (issues !== undefined || issues.length !== 0) {
+      getIssues().then(i => getPages(i.data.totalElements))
+    }
+  }, [])
+
   function getStatus (id) {
     let status
     let tempArray = []
@@ -126,7 +147,9 @@ export default function Issue (props) {
 
   async function deleteIssueOne (id) {
     await deleteIssue(id)
-    getIssues().then(i => setIssues(i.data.content))
+    getIssues().then(i => {
+      setIssues(i.data.content)
+    })
   }
   return (
     <Table striped bordered hover variant='dark'>

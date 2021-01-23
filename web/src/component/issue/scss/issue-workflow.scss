@@ -1,0 +1,47 @@
+.workflow-body {
+  overflow-x: auto;
+  position: fixed;
+  .flow-container {
+    display: inline-flex;
+    margin-top: 40px;
+    padding: 60px 80px;
+    .flow-item {
+      background-color: #222;
+      border-radius: 10px;
+      color: #eee;
+      width: 20rem;
+      height: 25rem;
+      margin: 0 10px;
+      .flow-header {
+        padding: 10px 10px;
+        text-align: center;
+        border-radius: 10px 10px 0 0;
+        border-bottom: 0.1px solid #eee;
+      }
+      .flow-body {
+        color: #eee;
+      }
+    }
+    .empty-container {
+      width: 20rem;
+      height: 25rem;
+      margin: 0 10px;
+      border: 0.2px dashed rgba(34, 34, 34, 0.2);
+      border-radius: 10px;
+      text-align: center;
+      padding: 10px;
+      .empty-container-text {
+        position: relative;
+        top: 45%;
+        border: 0.5px dashed #222;
+        border-radius: 10px;
+        padding: 20px 50px;
+        cursor: default;
+      }
+      .empty-container-text:hover {
+        color: #eee;
+        background-color: #222;
+      }
+    }
+  }
+}
