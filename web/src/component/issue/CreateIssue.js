@@ -47,11 +47,11 @@ export default function CreateIssue (props) {
   }
   const addIssue = async () => {
     let labelIds = []
-    selectedLabels.map(sl => {
+    selectedLabels.map(sl =>
       labels.forEach(l =>
         sl.labelName === l.labelName ? labelIds.push({ id: l.id }) : null
       )
-    })
+    )
     console.log(labelIds)
     await createIssue(title, description, labelIds)
     props.history.push('/issues')
